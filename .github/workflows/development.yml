@@ -25,11 +25,16 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITHUB_SSH_KEY }}" > ~/.ssh/github
+          chmod 600 ~/.ssh/github
+          echo "Host my-droplet" >> ~/.ssh/config
+          echo "  HostName 167.172.177.11" >> ~/.ssh/config
+          echo "  User root" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/github" >> ~/.ssh/config
+          ssh-keyscan -H 167.172.177.11 >> ~/.ssh/known_hosts
+
       - name: Deploy to DigitalOcean
-        uses: appleboy/scp-action@master
-        with:
-          host: 167.172.177.11
-          username: root
-          key: ${{ env.HOME }}/.ssh/github
-          source: .next
-          target: /var/www/html
+        run: scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts .next root@my-droplet:/var/www/html

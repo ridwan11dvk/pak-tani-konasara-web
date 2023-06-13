@@ -1,40 +1,50 @@
-name: Development Workflow
+name: Development
 
 on:
   push:
     branches:
-      - v0.1
+      - main
 
 jobs:
-  deploy:
-    name: Deploy to DigitalOcean Droplet
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18
-
       - name: Install dependencies
         run: npm install
 
-      - name: Build Next.js app
+      - name: Build project
         run: npm run build
 
-      - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          echo "Host my-droplet" >> ~/.ssh/config
-          echo "  HostName 167.172.177.11" >> ~/.ssh/config
-          echo "  User root" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
-          ssh-keyscan -H 167.172.177.11 >> ~/.ssh/known_hosts
+      - name: SSH into Droplet and deploy
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: Deploy to DigitalOcean
-        run: scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts .next root@my-droplet:/var/www/html
+        env:
+          HOST: 167.172.177.11
+          PORT: 22
+          USERNAME: root
+
+        # Here you can add your specific commands to deploy the project to your Droplet
+        # For example:
+        - name: Clone GitHub project
+          run: git clone https://github.com/ATech-Solution/CallNowCMSWeb.git
+
+        - name: Install dependencies on Droplet
+          run: npm install
+
+        - name: Build project on Droplet
+          run: npm run build
+
+        # Add any other commands or steps required for your specific deployment
+
+        # You can also use the $HOST and $PORT environment variables to access your Droplet within the workflow
+        # For example:
+        - name: Access application URL
+          run: curl http://$HOST:$PORT/

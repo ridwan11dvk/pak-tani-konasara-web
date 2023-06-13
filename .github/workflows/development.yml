@@ -30,7 +30,7 @@ jobs:
         with:
           host: 167.172.177.11
           username: root
-          key: 123SuksesSelalu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: .next
           target: /var/www/html
 

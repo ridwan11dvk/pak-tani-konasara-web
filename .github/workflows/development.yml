@@ -31,7 +31,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa.pub
 
           eval "$(ssh-agent -s)"
-          ssh-add - <<< "$SSH_PRIVATE_KEY"
+          ssh-add -K ~/.ssh/id_rsa.pub
 
       - name: SSH into the droplet and deploy
         run: |

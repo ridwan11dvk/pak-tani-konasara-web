@@ -3,7 +3,7 @@ name: Development
 on:
   push:
     branches:
-      - main
+      - v0.1
 
 jobs:
   build:

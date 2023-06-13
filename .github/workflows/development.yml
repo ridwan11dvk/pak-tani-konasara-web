@@ -1,0 +1,38 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Configure SSH agent
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+
+      - name: SSH into the droplet and deploy
+        run: |
+          cd /root/CallNowCMSWeb
+          git fetch
+          git checkout development
+          git pull origin development
+          npm install
+          npm run build
+          pm2 restart nextjs

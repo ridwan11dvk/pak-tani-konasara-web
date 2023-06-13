@@ -19,7 +19,7 @@ jobs:
           node-version: 14
 
       - name: Install SSH client
-        run: apt-get install -y openssh-client
+        run: sudo apt-get install -y openssh-client
 
       - name: SSH into the droplet and deploy
         uses: appleboy/ssh-action@master

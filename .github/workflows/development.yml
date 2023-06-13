@@ -31,14 +31,14 @@ jobs:
           PORT: 22
           USERNAME: root
 
-        - name: Clone GitHub project
-          run: git clone https://github.com/ATech-Solution/CallNowCMSWeb.git
+      - name: Clone GitHub project
+        run: git clone https://github.com/ATech-Solution/CallNowCMSWeb.git
 
-        - name: Install dependencies on Droplet
-          run: npm install
+      - name: Install dependencies on Droplet
+        run: npm install
 
-        - name: Build project on Droplet
-          run: npm run build
+      - name: Build project on Droplet
+        run: npm run build
           
       - name: Access application URL
         run: curl http://$HOST:$PORT/

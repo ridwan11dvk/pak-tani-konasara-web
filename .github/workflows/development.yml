@@ -30,7 +30,6 @@ jobs:
         with:
           host: 167.172.177.11
           username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ env.HOME }}/.ssh/github
           source: .next
           target: /var/www/html
-

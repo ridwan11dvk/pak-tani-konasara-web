@@ -28,12 +28,12 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github
-          chmod 600 ~/.ssh/github
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           echo "Host my-droplet" >> ~/.ssh/config
           echo "  HostName 167.172.177.11" >> ~/.ssh/config
           echo "  User root" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/github" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
           ssh-keyscan -H 167.172.177.11 >> ~/.ssh/known_hosts
 
       - name: Deploy to DigitalOcean

@@ -7,38 +7,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: SSH into Droplet and deploy
-        uses: webfactory/ssh-agent@v0.5.1
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
-        env:
-          HOST: 167.172.177.11
-          PORT: 22
-          USERNAME: root
-
-      - name: Clone GitHub project
-        run: git clone https://github.com/ATech-Solution/CallNowCMSWeb.git
-
-      - name: Install dependencies on Droplet
-        run: npm install
-
-      - name: Build project on Droplet
-        run: npm run build
+          node-version: ${{ matrix.node-version }}
+      - run : |
+          npm i
+          npm run build
           
-      - name: Access application URL
-        run: curl http://$HOST:$PORT/

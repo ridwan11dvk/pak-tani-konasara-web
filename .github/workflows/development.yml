@@ -39,9 +39,8 @@ jobs:
           script: |
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
-            docker compose down
-            docker rm callnow-container || true
-            docker rmi callnow-web || true
-            docker build -t callnow-web .
+            docker compose down --volumes --remove-orphans
+            docker rm $(docker ps -aq) || true
+            docker rmi $(docker images -aq) || true
             docker compose up -d
             '

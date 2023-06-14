@@ -34,3 +34,4 @@ jobs:
           npx pm2 delete callnow || true
           npx pm2 save --force
           npx pm2 start npm --name "callnow" -- start -- -p 3000
+          npx pm2 save --force

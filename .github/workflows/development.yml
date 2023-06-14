@@ -29,11 +29,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install PM2
-        run: npm install pm2
-
       - name: Deploy app
         run: |
           npx pm2 delete callnow || true
-          npx pm2 save
+          npx pm2 save --force
           npx pm2 start npm --name "callnow" -- start -- -p 3000

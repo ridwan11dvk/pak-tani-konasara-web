@@ -1,0 +1,21 @@
+name: SSH Login
+
+on:
+  push:
+    branches:
+      - v0.1
+
+jobs:
+  ssh_login:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into server
+        uses: appleboy/ssh-action@master
+        with:
+          host: '167.172.177.11'
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Run a simple command on the server
+            hostname

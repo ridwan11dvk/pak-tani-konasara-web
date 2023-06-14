@@ -1,4 +1,4 @@
-name: Development
+name: CI/CD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -16,23 +16,23 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 'latest' 
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Next.js app
         run: npm run build
 
   deploy:
     needs: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+      - name: Install PM2
+        run: npm install pm2 -g
 
-      - name: Deploy Docker container
-        run: docker-compose up -d
+      - name: Deploy app
+        run: |
+          pm2 delete my-app || true
+          pm2 start npm --name "my-app" -- start

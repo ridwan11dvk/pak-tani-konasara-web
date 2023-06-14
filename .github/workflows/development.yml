@@ -34,5 +34,5 @@ jobs:
 
       - name: Deploy app
         run: |
-          npx pm2 delete my-app || true
-          npx pm2 start npm --name "my-app" -- start
+          npx pm2 delete callnow || true
+          npx pm2 start npm --name "callnow" -- start

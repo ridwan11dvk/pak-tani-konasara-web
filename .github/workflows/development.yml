@@ -1,12 +1,12 @@
-name: CI/CD
+name: Development
 
 on:
   push:
     branches:
-      - development
+      - v0.1
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,29 +16,36 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 18
 
-      - name: Install SSH client
-        run: sudo apt-get install -y openssh-client
+      - name: Install dependencies
+        run: npm install
 
-      - name: Configure SSH agent and add key
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+      - name: Build Next.js app
+        run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: callnow-web:latest
+          builder: default
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Deploy Docker container
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-          eval "$(ssh-agent -s)"
-          ssh-add - <<< "$SSH_PRIVATE_KEY"
-
-      - name: SSH into the droplet and deploy
-        run: |
-          cd /root/CallNowCMSWeb
-          git fetch
-          git checkout development
-          git pull origin development
-          npm install
-          npm run build
-          pm2 restart nextjs
+          docker stop callnow-container || true
+          docker rm callnow-container || true
+          docker pull callnow-web:latest
+          docker run -d --name callnow-container -p 3000:3000 callnow-web:latest

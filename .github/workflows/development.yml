@@ -39,10 +39,10 @@ jobs:
           script: |
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
-            docker-compose down
+            docker compose down
             docker rm callnow-container || true
             docker rmi callnow-web || true
             docker build -t callnow-web .
             docker run -d --name callnow-container -p 3000:3000 callnow-web
-            docker-compose up -d
+            docker compose up -d
             '

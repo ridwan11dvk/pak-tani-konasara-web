@@ -6,7 +6,7 @@ on:
       - v0.1
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +23,14 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker
+        uses: docker/setup-docker@v1
 
       - name: Build Docker image
         run: docker build -t callnow-web .

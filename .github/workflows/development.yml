@@ -17,11 +17,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install pm2
         run: npm install pm2 -g
-      - run : |
-          npm install
-          npm run build
-          pm2 stop 0
-          pm2 start 0
-          pm2 save
-          sudo service nginx restart
+      - name: Install dependencies
+        run : npm install
+      - name: Build Next.js project
+        run: npm run build
+      - name: Stop previous Next.js process
+        run: npx pm2 stop 0 || echo 'No previous process found'
+      - name: Start Next.js project
+        run: npm run start -- -p 3000
 

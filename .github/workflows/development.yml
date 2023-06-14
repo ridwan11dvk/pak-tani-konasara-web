@@ -1,38 +1,40 @@
-name: Development
+name: Next.js Docker CI/CD
 
 on:
   push:
     branches:
-      - v0.1
+      - V0.1
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install pm2
-        run: npm install pm2 -g
+          node-version: 18
 
       - name: Install dependencies
-        run : npm install
+        run: npm ci
 
-      - name: Build Next.js project
+      - name: Build Next.js app
         run: npm run build
 
-      - name: Stop previous Next.js process
-        run: npx pm2 stop 0 || echo 'No previous process found'
+      - name: Build Docker image
+        run: docker build -t callnow-web .
 
-      - name: Start Next.js project with pm2
-        run: npx pm2 start npm --name "callnow-app" -- start
+      - name: Push Docker image
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push callnow-web
 
-      - name: Save pm2 process list
-        run: npx pm2 save
-        
-      - name: Restart Web Server
-        run: sudo service nginx restart
-
+      - name: Deploy Docker container
+        run: |
+          docker stop callnow-container || true
+          docker rm callnow-container || true
+          docker pull callnow-web
+          docker run -d --name callnow-container -p 3000:3000 callnow-web

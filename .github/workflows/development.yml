@@ -30,9 +30,9 @@ jobs:
 
     steps:
       - name: Set up Docker Compose
-        uses: docker/compose-action@1.4.3
-        with:
-          compose-file: docker-compose.yml
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
       - name: Deploy Docker container
         run: docker-compose up -d

@@ -43,6 +43,5 @@ jobs:
             docker rm callnow-container || true
             docker rmi callnow-web || true
             docker build -t callnow-web .
-            docker run -d --name callnow-container -p 3000:3000 callnow-web
             docker compose up -d
             '

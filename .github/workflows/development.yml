@@ -1,4 +1,4 @@
-name: Next.js Docker CI/CD
+name: Development
 
 on:
   push:

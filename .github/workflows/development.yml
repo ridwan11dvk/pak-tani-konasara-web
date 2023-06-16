@@ -37,10 +37,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            sudo -u callnow bash -c '
-            cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
+            cd CallNowCMSWeb
+            echo ${{ secrets.PASSWORD }} | sshpass -p -i ssh -o StrictHostKeyChecking=no git pull
             docker compose down --volumes --remove-orphans
-            docker rm $(docker ps -aq) || true
             docker rmi $(docker images -aq) || true
             docker compose up -d
-            '

@@ -1,3 +1,4 @@
+import useUserStore from '@/stores/useUser';
 import { Box, Button, Flex, HStack, Icon, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -10,8 +11,14 @@ interface LayoutProps {
 const menus: any[] = [{ name: 'User', path: '/dashboard' }, { name: 'Order', path: '/dashboard/order' }, { name: 'Client', path: '/dashboard/client' }]
 
 const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
-  const { asPath } = useRouter()
-  
+  const { asPath, replace } = useRouter()
+  const { removeUserState } = useUserStore()
+
+  const logout = () => {
+    removeUserState()
+    replace('/')
+  }
+
   return (
     <Box display="flex" minHeight="100vh">
       <Box flex="4" bg="gray.100">
@@ -24,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
                 return <Text as={Link} href={menu.path} fontWeight={asPath === menu.path ? 'bold' : 'normal'} color={asPath === menu.path ? 'white' : '#bfbfbf'} key={index}>{menu.name}</Text>
               })}
             </HStack>
-            <Icon as={CiLogout} boxSize={6} sx={{cursor:'pointer'}}/>
+            <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{cursor:'pointer'}}/>
           </Flex>
         </Box>
         {children}

@@ -48,7 +48,7 @@ apiClient.interceptors.request.use(
     // if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     // if (token) {
     if (FetchToken()) {
-        (request.headers as AxiosHeaders).set("Authorization", `Bearer ${FetchToken()}`);
+        (request.headers as AxiosHeaders).set("Authorization", `${FetchToken()}`);
         
     }
     (request.headers as AxiosHeaders).set("accept", `application/json`);
@@ -71,6 +71,9 @@ const apiCall = {
   },
   put(resource: string, params: string) {
     return apiClient.put(resource, params);
+  },
+  patch(resource: string, params: any) {
+    return apiClient.patch(resource, params);
   },
   delete(resource: string) {
     return apiClient.delete(resource);

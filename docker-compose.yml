@@ -6,7 +6,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
-    volumes:
-      - ./pages:/app/pages
-      - ./public:/app/public
-      - ./styles:/app/styles

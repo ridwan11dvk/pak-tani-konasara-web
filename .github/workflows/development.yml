@@ -29,23 +29,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+      - name: Deploy app
+        uses: appleboy/ssh-action@master
         with:
-          context: .
-          push: true
-          tags: callnow-web:latest
-          builder: default
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Deploy Docker container
-        run: |
-          docker stop callnow-container || true
-          docker rm callnow-container || true
-          docker pull callnow-web:latest
-          docker run -d --name callnow-container -p 3000:3000 callnow-web:latest
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            sudo -u callnow bash -c '
+            cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
+            docker compose down --volumes --remove-orphans
+            docker rm $(docker ps -aq) || true
+            docker rmi $(docker images -aq) || true
+            docker compose up -d
+            '

@@ -5,10 +5,10 @@ import { AxiosError, AxiosResponse } from "axios";
 export const useHandlingHttpToast = () => {
   const toast = useToast();
 
-  const successToast = () => {
+  const successToast = (msg?: string) => {
       toast({
         title: "Success",
-        description: "Operation completed successfully.",
+        description: msg || "Operation completed successfully.",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -28,7 +28,7 @@ export const useHandlingHttpToast = () => {
             errorMessage = "Bad Request. Please check your input.";
             break;
           case 401:
-            errorMessage = "Unauthorized. Please login again.";
+            errorMessage = response?.data?.error || "Unauthorized. Please login again.";
             break;
           case 422:
             errorMessage = "Unprocessable Entity. Invalid data provided.";
@@ -57,4 +57,15 @@ export const useHandlingHttpToast = () => {
     successToast,
     errorToast
   };
+};
+
+export const serialize = function (obj: any) {
+  var str = [];
+  for (var p in obj)
+    if (obj.hasOwnProperty(p)) {
+      if (obj[p]) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    }
+  return str.join("&");
 };

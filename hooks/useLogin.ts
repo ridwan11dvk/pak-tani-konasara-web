@@ -45,10 +45,6 @@ export const useLogin = () => {
     register,
     formState: { errors },
   } = useForm<LoginFormInputs>({
-    defaultValues: {
-      email: "admin@callnow.com",
-      password: "Password123!",
-    },
     resolver: yupResolver(schema),
   });
 

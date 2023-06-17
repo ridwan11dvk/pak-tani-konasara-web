@@ -7,20 +7,27 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Print secret value
-        run: echo ${{ secrets.SSH_PRIVATE_KEY }}
-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 18.7.0
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Print secret value
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: echo $SSH_PRIVATE_KEY
 
   deploy:
     needs: build
@@ -38,6 +45,9 @@ jobs:
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
             docker compose down --volumes --remove-orphans
+            docker rm $(docker ps -aq) || true
             docker rmi $(docker images -aq) || true
             docker compose up -d
             '
+
+

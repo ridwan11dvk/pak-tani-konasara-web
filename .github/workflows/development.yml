@@ -24,11 +24,6 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Print secret value
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: echo $SSH_PRIVATE_KEY
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -44,10 +39,10 @@ jobs:
           script: |
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
-            docker compose down --volumes --remove-orphans
-            docker rm $(docker ps -aq) || true
-            docker rmi $(docker images -aq) || true
-            docker compose up -d
+            npm install
+            npm run build
+            kill $(lsof -t -i:3000) || true
+            npm run start &
             '
 
 

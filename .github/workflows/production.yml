@@ -1,4 +1,4 @@
-name: CI/CD
+name: Development
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - production
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,22 +16,33 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 18
 
-      - name: Install SSH client
-        run: sudo apt-get install -y openssh-client
+      - name: Install dependencies
+        run: npm install
 
-      - name: SSH into the droplet and deploy
+      - name: Build Next.js app
+        run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy app
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DROPLET_HOST }}
-          username: ${{ secrets.DROPLET_USERNAME }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /root/CallNowCMSWeb
-            git fetch
-            git checkout development
-            git pull origin development
-            npm install
-            npm run build
-            pm2 restart nextjs
+            sudo -u callnow bash -c '
+            cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
+            docker compose down --volumes --remove-orphans
+            docker rm $(docker ps -aq) || true
+            docker rmi $(docker images -aq) || true
+            docker compose up -d
+            '
+
+

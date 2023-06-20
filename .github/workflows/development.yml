@@ -33,6 +33,7 @@ jobs:
           script: |
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
+            kill $(lsof -t -i:3000) || true
             rm -rf node_modules/
             npm cache clean --force
             npm install
@@ -54,7 +55,6 @@ jobs:
           script: |
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
-            kill $(lsof -t -i:3000) || true
             nohup npm run start > /dev/null 2>&1 &
             '
 

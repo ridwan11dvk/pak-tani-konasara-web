@@ -9,21 +9,14 @@ on:
       - v0.1
 
 jobs:
-  checkout:
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Wait for app data
-        run: sleep 5 && echo "Waiting to get app data"
-
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: /home/callnow/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -43,7 +36,7 @@ jobs:
         run: npm run build
 
   deploy:
-    needs: [build, checkout]
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:

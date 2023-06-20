@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - v0.1
+  pull_request:
+    branches:
+      - v0.1
 
 jobs:
   build:
@@ -42,7 +45,7 @@ jobs:
             npm install
             npm run build
             kill $(lsof -t -i:3000) || true
-            npm run start &
+            npm run start
             '
 
 

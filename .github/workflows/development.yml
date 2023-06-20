@@ -9,6 +9,13 @@ on:
       - v0.1
 
 jobs:
+  checkout:
+    runs-on: self-hosted
+
+    steps:
+      - name: Wait for app data
+        run: sleep 5 && echo "Waiting to get app data"
+
   build:
     runs-on: ubuntu-latest
 

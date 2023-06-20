@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            sudo -u callnow bash -c '
+            su - callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
             npm install
             npm run build

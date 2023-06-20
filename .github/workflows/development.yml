@@ -19,35 +19,11 @@ jobs:
         run: sleep 5 && echo "Waiting to get app data"
 
   build:
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18.7.0
-
-      - name: Remove Old dependencies
-        run: rm -rf node_modules/
-      
-      - name: Clean Caches
-        run: npm cache clean --force
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Next.js app
-        run: npm run build
-
-  deploy:
-    needs: [build, checkout]
+    needs: [checkout]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy app
+      - name: Build app
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -61,6 +37,23 @@ jobs:
             npm cache clean --force
             npm install
             npm run build
+            '
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            sudo -u callnow bash -c '
+            cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
             kill $(lsof -t -i:3000) || true
             nohup npm run start > /dev/null 2>&1 &
             '

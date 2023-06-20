@@ -45,7 +45,7 @@ jobs:
             npm install
             npm run build
             kill $(lsof -t -i:3000) || true
-            npm run start
+            nohup npm run start > /dev/null 2>&1 &
             '
 
 

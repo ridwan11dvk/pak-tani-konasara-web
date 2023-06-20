@@ -43,6 +43,7 @@ jobs:
             sudo -u callnow bash -c '
             cd ~/actions-runner/_work/CallNowCMSWeb/CallNowCMSWeb/
             rm -rf node_modules/
+            npm cache clean --force
             npm install
             npm run build
             kill $(lsof -t -i:3000) || true

@@ -93,6 +93,7 @@ export const useOrderHook = () => {
             if (!selectedData) {
                 response = await mutationPost.mutateAsync(cpPayload);
             } else {
+                delete cpPayload?._id
                 response = await mutationPatch.mutateAsync({
                     body: cpPayload,
                     id: selectedData?._id,

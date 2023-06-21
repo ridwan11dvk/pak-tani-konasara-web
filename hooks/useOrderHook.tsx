@@ -86,7 +86,7 @@ export const useOrderHook = () => {
 
     const onSubmit = async (payload: AddOrderType): Promise<any> => {
         try {
-            const cpPayload: AddOrderType = { ...payload, id_user: selectedData ? userData?._id : userId  };
+            const cpPayload: AddOrderType = { ...payload, id_user: selectedData ? userId ? userId : userData?._id : userData?._id  };
 
             // Make the HTTP request to the backend server
             let response = null;

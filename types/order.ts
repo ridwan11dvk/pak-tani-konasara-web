@@ -16,6 +16,7 @@ export type OrderType = {
 };
 
 export type AddOrderType = {
+  _id?: string;
   id_user?: string | string[];
   title: string;
   order_date: string;

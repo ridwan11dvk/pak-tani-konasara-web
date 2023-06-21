@@ -1,4 +1,4 @@
-import { UserDataInterface } from "@/hooks/useLogin";
+import { OrderType } from "@/types/order";
 import {
     Box,
     HStack,
@@ -23,10 +23,10 @@ interface ModalInterface {
     onDelete: (id: string) => void
     isLoadingDelete: boolean
     isSuccessDelete: boolean
-    selectedData: UserDataInterface | null
+    selectedData: OrderType | null
 }
 
-export default function ModalDeleteUser({
+export default function ModalDeleteOrder({
     isOpen,
     onClose,
     isLoadingDelete,
@@ -63,7 +63,7 @@ export default function ModalDeleteUser({
                 <ModalBody>
                     <VStack justifyContent="center">
                         <Text fontSize="2xl" fontWeight={"600"}>Are you sure to delete</Text>
-                        <Text fontSize="2xl" fontWeight={"600"}>{selectedData?.name}</Text>
+                        <Text fontSize="2xl" fontWeight={"600"}>{selectedData?.title}</Text>
                         <HStack gap={10}>
                             <Button colorScheme="red" mt={8} onClick={onClose}>
                                 Cancel

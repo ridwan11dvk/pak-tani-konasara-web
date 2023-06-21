@@ -31,7 +31,7 @@ interface ModalInterface {
     onClose: () => void;
     userForm: UseFormReturn<AddUserType>
     mutationPost: UseMutationResult<PostUserApiResponse, AxiosError, AddUserType>
-    onSubmit: (payload: AddUserType) => void
+    onSubmit: (payload: AddUserType) => Promise<PostUserApiResponse | undefined>    
     handleSelectedData: (data?: UserDataInterface) => void
     isLoadingForm: boolean
     isSuccessForm: boolean
@@ -75,9 +75,14 @@ export default function ModalUser({
                         New Order
                     </Flex>
                 </ModalHeader>
-                <ModalCloseButton />
+                <ModalCloseButton onClick={onClose}/>
                 <ModalBody>
-                    <Box as={'form'} onSubmit={handleSubmit(onSubmit)} method="POST">
+                    <Box as={'form'} onSubmit={handleSubmit(async(payload) => {
+                        const res = await onSubmit(payload)
+                        if(res?.data) {
+                            onClose()
+                        }
+                        })} method="POST">
                         <FormControl id="email" mb={4} isInvalid={errors?.name?.message ? true : false}>
                             <FormLabel>Name</FormLabel>
                             <Input type="text" {...register('name')} />

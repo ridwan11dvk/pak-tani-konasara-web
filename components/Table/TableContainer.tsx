@@ -87,7 +87,8 @@ export type TableProps<DataType extends {}> = {
     actionList?: ActionList[];
     isValidation?: boolean;
     setQueryParams?: (params: any) => void
-    totalPages?: number
+    queryParams?: any
+    totalPages?: any
     totalData?: number
 };
 
@@ -106,6 +107,7 @@ function TableContainer<DataType extends object>({
     setQueryParams,
     isLoading,
     totalPages = 1,
+    queryParams,
     ...props
 }: TableProps<DataType>) {
     const [rowSelection, setRowSelection] = useState<RowSelection>({});
@@ -135,7 +137,11 @@ function TableContainer<DataType extends object>({
                             return;
                         }
 
-                        const rowValue = row?.original?.[cellId as keyof DataType];
+                        const rowValue: any = row?.original?.[cellId as keyof DataType]
+
+                        if (typeof rowValue === 'function') {
+                            return rowValue?.(row?.original)
+                        }
 
                         // === Render Date type
                         // @ts-expect-error
@@ -200,16 +206,12 @@ function TableContainer<DataType extends object>({
     }, [columnsProp, isSelectable, actionButton, actionMenu]);
 
     const table = useReactTable({
-        data,
+        data: data,
         columns,
         enableMultiRowSelection: true,
         state: {
             rowSelection,
             sorting,
-            pagination: {
-                pageIndex,
-                pageSize,
-            },
 
         },
         onSortingChange: setSorting,
@@ -358,7 +360,7 @@ function TableContainer<DataType extends object>({
                                                         header.column.columnDef.header,
                                                         header.getContext()
                                                     )}
-                                                {isSorting && header?.id !== "_action" && header?.id !== '_selectable' && (
+                                                {isSorting && header?.id !== "_action" && header?.id !== 'cell' && header?.id !== '_selectable' && (
                                                     <Box as="span" >
                                                         {{
                                                             asc: <ChevronUpIcon boxSize={6} color="brands.black.80" />,
@@ -386,55 +388,56 @@ function TableContainer<DataType extends object>({
                                 </Td>
                             </Tr>
                             :
-                            table?.getRowModel().rows.map((row, index) => (
-                                <Tr
-                                    key={row.id}
-                                    position="relative"
-                                    bg={index % 2 ? '#F0F5FC' : 'white'}
-                                    sx={{
-                                        "td:first-of-type:before": tableStyle
-                                    }}
-                                >
-                                    {row.getVisibleCells().map((cell, index) => {
-                                        let textAlign: ResponsiveValue<any>;
-                                        if (isSelectable && index === 0) {
-                                            textAlign = "center";
-                                        }
+                            table?.getRowModel().rows.map((row, index) => {
+                                return (
+                                    <Tr
+                                        key={row.id}
+                                        position="relative"
+                                        bg={index % 2 ? '#F0F5FC' : 'white'}
+                                        sx={{
+                                            "td:first-of-type:before": tableStyle
+                                        }}
+                                    >
+                                        {row.getVisibleCells().map((cell, index) => {
+                                            let textAlign: ResponsiveValue<any>;
+                                            if (isSelectable && index === 0) {
+                                                textAlign = "center";
+                                            }
 
-                                        let cellWidth;
-                                        if (isSelectable && index === 0) {
-                                            cellWidth = "60px";
-                                        }
+                                            let cellWidth;
+                                            if (isSelectable && index === 0) {
+                                                cellWidth = "60px";
+                                            }
 
-                                        return (
-                                            <Td
-                                                key={cell.id}
-                                                fontSize="12px"
-                                                fontWeight="normal"
-                                                lineHeight="14px"
-                                                textTransform="none"
-                                                textAlign={textAlign}
-                                                w={cellWidth}
-                                                letterSpacing="unset"
-                                                border="none"
-                                                py={3}
-                                                px={4}
-                                                _first={{
-                                                    pl: 5
-                                                }}
-                                                color={cell.renderValue() === "Invalid" ? "red" : "black"}
-                                            >
-                                                {cell.renderValue() === "Invalid"
-                                                    ? "無效"
-                                                    : flexRender(
+                                            return (
+                                                <Td
+                                                    key={cell.id}
+                                                    fontSize="12px"
+                                                    fontWeight="normal"
+                                                    lineHeight="14px"
+                                                    textTransform="none"
+                                                    textAlign={textAlign}
+                                                    w={cellWidth}
+                                                    letterSpacing="unset"
+                                                    border="none"
+                                                    py={3}
+                                                    px={4}
+                                                    _first={{
+                                                        pl: 5
+                                                    }}
+                                                    color={cell.renderValue() === "Invalid" ? "red" : "black"}
+                                                >
+                                                    {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext()
                                                     )}
-                                            </Td>
-                                        );
-                                    })}
-                                </Tr>
-                            ))
+                                                </Td>
+                                            );
+                                        })}
+                                    </Tr>
+                                )
+                            })
+
                         }
                     </Tbody>
 
@@ -446,6 +449,7 @@ function TableContainer<DataType extends object>({
                         className=""
                         onClick={() => {
                             pageIndex === 0 ? null : setPageindex(0)
+                            // table.setPageCount(0)
                         }}
                         disabled={!table.getCanPreviousPage()}
                     >
@@ -453,7 +457,10 @@ function TableContainer<DataType extends object>({
                     </Button>
                     <Button
                         className=""
-                        onClick={() => pageIndex === 0 ? null : setPageindex(pageIndex - 1)}
+                        onClick={() => {
+                            pageIndex === 0 ? null : setPageindex(pageIndex - 1)
+                            // table.setPageCount(pageIndex - 1)
+                        }}
                         disabled={!table.getCanPreviousPage()}
                     >
                         {'<'}
@@ -461,13 +468,16 @@ function TableContainer<DataType extends object>({
                     <Flex alignItems="center" justifyContent="center" minW="100px" gap={2}>
                         <Text>Page</Text>
                         <Text>
-                            {table.getState().pagination.pageIndex + 1} of{' '}
+                            {queryParams?.page} of{' '}
                             {totalPages || table.getPageCount()}
                         </Text>
                     </Flex>
                     <Button
                         className=""
-                        onClick={() => pageIndex + 1 === totalPages ? null : setPageindex(pageIndex + 1)}
+                        onClick={() => {
+                            pageIndex + 1 === totalPages ? null : setPageindex(pageIndex + 1)
+                            table.setPageCount(pageIndex - 1)
+                        }}
                         disabled={pageIndex + 1 === totalPages}
                     >
                         {'>'}

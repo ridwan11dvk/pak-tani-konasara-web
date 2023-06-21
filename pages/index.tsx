@@ -1,10 +1,10 @@
-import { Box, Button, Center, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Center, FormControl, FormErrorMessage, FormLabel, Input, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useLogin } from '../hooks/useLogin';
 import Head from 'next/head';
 import Link from 'next/link';
 
 const LoginPage = (): JSX.Element => {
-  const { handleSubmit, register, errors } = useLogin();
+  const { handleSubmit, register, errors, mutation } = useLogin();
 
   return (
     <>
@@ -28,10 +28,13 @@ const LoginPage = (): JSX.Element => {
               <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
             </FormControl>
             <Stack direction="row" justify="end" align="end">
-              <Button colorScheme="blue" type="submit">
-                {/* <Link href="/dashboard"> */}
-                Sign In
-                {/* </Link> */}
+              <Button colorScheme="blue" type="submit" isDisabled={mutation.isLoading}>
+                {
+                  mutation.isLoading ?
+                    <Spinner size="xs" />
+                    :
+                    'Sign In'
+                }
               </Button>
             </Stack>
           </form>

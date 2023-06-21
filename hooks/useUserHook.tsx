@@ -18,10 +18,13 @@ import * as yup from "yup";
 import { useHandlingHttpToast } from "@/utils/helper";
 import useUserStore from "@/stores/useUser";
 import { UserDataInterface } from "./useLogin";
+import { Button } from "@chakra-ui/react";
+import Link from "next/link";
+import { defaultPerPage } from "@/utils/constant";
 
 const USERS_KEY = "users-key";
 
-export const columnsUsers = [
+export const columnsUsers: any[] = [
   {
     key: "name",
     label: "Name",
@@ -34,6 +37,11 @@ export const columnsUsers = [
     key: "role",
     label: "Role",
   },
+  {
+    key: "cell",
+    label: "Order",
+    cell: (row: any) => CustomCell(row?.original),
+  }
 ];
 
 const schema = yup
@@ -48,10 +56,16 @@ export const useUserHook = () => {
   const [selectedData, setSelectedData] = useState<UserDataInterface | null>(
     null
   );
+  const [params, setParams] = useState({
+    page: 1,
+    limit: defaultPerPage,
+    search: "",
+  });
 
   const { userData } = useUserStore();
   const { successToast, errorToast } = useHandlingHttpToast();
   const queryClient = useQueryClient();
+  const { data: dataUsers, isLoading, refetch } = useFetchUsers(params);
   const mutationPost = usePostUser();
   const mutationPatch = usePatchUser();
   const mutationDelete = useDeleteUser();
@@ -59,24 +73,13 @@ export const useUserHook = () => {
     resolver: yupResolver(schema),
   });
 
-  const [params, setParams] = useState({
-    page: 1,
-    limit: 1,
-    search: "",
-  });
 
-  // useEffect(() => {
-  //   console.log('selectedData', selectedData)
-  //   if(selectedData){
-  //     userForm.reset({
-  //       email: selectedData?.email,
-  //       name: selectedData?.name,
-  //       role: selectedData?.role
-  //     })
-  //   } else {
-  //     userForm.reset()
-  //   }
-  // },[selectedData])
+
+  useEffect(() => {
+    if (params.limit || params.page || params.search) {
+      refetch()
+    }
+  }, [params.page, params.limit, params.search]);
 
   const handleSelectedData = (data?: UserDataInterface) => {
     if (data) {
@@ -86,7 +89,7 @@ export const useUserHook = () => {
     }
   };
 
-  const onSubmit = async (payload: AddUserType) => {
+  const onSubmit = async (payload: AddUserType): Promise<any> => {
     try {
       const cpPayload: AddUserType = { ...payload };
 
@@ -134,11 +137,11 @@ export const useUserHook = () => {
     }
   }
 
-  const { data: dataUsers, isLoading } = useFetchUsers(params);
+
   return {
     totalData: dataUsers?.total,
     totalPages: dataUsers?.totalPages,
-    dataUsers: dataUsers?.data || [],
+    dataUsers: dataUsers?.data?.map((item) => ({  ...item, cell: CustomCell })),
     isLoadingUsers: isLoading,
     isLoadingForm: mutationPatch.isLoading || mutationPost.isLoading,
     isSuccessForm: mutationPatch.isSuccess || mutationPatch.isSuccess,
@@ -155,6 +158,10 @@ export const useUserHook = () => {
     isSuccessDelete: mutationDelete.isSuccess ,
   };
 };
+
+export function CustomCell(value: any) {
+  return <Button as={Link} colorScheme="blue" href={`/dashboard/order?userId=${value?._id}`}>View</Button>
+}
 
 export const useFetchUsers = (params: any) => {
   return useQuery<UserApiResponse, AxiosError>([USERS_KEY, params], () =>

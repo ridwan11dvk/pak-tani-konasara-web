@@ -31,13 +31,13 @@ export const useHandlingHttpToast = () => {
             errorMessage = response?.data?.error || "Unauthorized. Please login again.";
             break;
           case 422:
-            errorMessage = "Unprocessable Entity. Invalid data provided.";
+            errorMessage = response?.data?.error?.details?.map((err: any) => err?.message)?.join(',') || "Unprocessable Entity. Invalid data provided.";
             break;
           case 500:
-            errorMessage = "Internal Server Error. Please try again later.";
+            errorMessage = response?.data?.error ||"Internal Server Error. Please try again later.";
             break;
           default:
-            errorMessage = "An error occurred. Please try again later.";
+            errorMessage = response?.data?.error || "An error occurred. Please try again later.";
             break;
         }
       } else if (err?.message === "Network Error") {

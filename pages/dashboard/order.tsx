@@ -47,7 +47,14 @@ const DashboardPage = (): JSX.Element => {
       <HStack gap={4} >
         <Button onClick={() => {
           onOpen()
-          orderForm.reset(data)
+          orderForm.reset({
+            title: data.title,
+            order_by: data.order_by,
+            order_date: data.order_date,
+            overview: data.overview,
+            finish_by_days: data.finish_by_days,
+            detail: data.detail,
+          })
           handleSelectedData(data)
         }}>
           <Icon as={BsPencil} />

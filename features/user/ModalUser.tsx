@@ -72,7 +72,7 @@ export default function ModalUser({
             <ModalContent>
                 <ModalHeader>
                     <Flex justifyContent="center">
-                        New Order
+                        New User
                     </Flex>
                 </ModalHeader>
                 <ModalCloseButton onClick={onClose}/>

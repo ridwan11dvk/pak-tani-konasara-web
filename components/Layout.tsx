@@ -8,10 +8,14 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const menus: any[] = [{ name: 'User', path: '/dashboard' }, { name: 'Order', path: '/dashboard/order' }, { name: 'Client', path: '/dashboard/client' }]
+const menus: any[] = [
+  { name: 'User', path: '/dashboard', type: 'user' },
+  { name: 'Order', path: '/dashboard/order', type: 'order' },
+  { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' }
+]
 
 const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
-  const { asPath, replace } = useRouter()
+  const { asPath, replace, basePath } = useRouter()
   const { removeUserState } = useUserStore()
 
   const logout = () => {
@@ -24,14 +28,19 @@ const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
       <Box flex="4" bg="gray.100">
         {/* Header */}
         <Box p={4} minW="full" bgColor="blue.400" sx={{ color: 'white' }}>
-          <Flex justifyContent="space-between"alignItems="center">
+          <Flex justifyContent="space-between" alignItems="center">
             <HStack gap={4}>
               <Text as={Link} href={"/dashboard"} mr={4} fontSize="xl" fontWeight="bold">CallNow CMS</Text>
               {menus.map((menu, index) => {
-                return <Text as={Link} href={menu.path} fontWeight={asPath === menu.path ? 'bold' : 'normal'} color={asPath === menu.path ? 'white' : '#bfbfbf'} key={index}>{menu.name}</Text>
+                return <Text
+                  as={Link}
+                  href={menu.path}
+                  fontWeight={asPath?.includes(menu.type) || asPath === '/dashboard' && menu.type === 'user' ? 'bold' : 'normal'}
+                  color={asPath?.includes(menu.type) || asPath === '/dashboard' && menu.type === 'user' ? 'white' : '#bfbfbf'} key={index}>
+                  {menu.name}</Text>
               })}
             </HStack>
-            <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{cursor:'pointer'}}/>
+            <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{ cursor: 'pointer' }} />
           </Flex>
         </Box>
         {children}

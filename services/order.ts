@@ -1,11 +1,15 @@
 import { AUTH_API } from "@/config/endpoint";
 import apiCall from "./apiCall";
 import { serialize } from "@/utils/helper";
-import { AddUserType } from "@/types/user";
 import { AddOrderType } from "@/types/order";
 
 export const orderService = async (payload: any) => {
   const res = await apiCall.get(`${AUTH_API.ORDERS}?${serialize(payload)}`);
+  return res.data;
+};
+
+export const orderDetailService = async (id: string | string[]) => {
+  const res = await apiCall.get(`${AUTH_API.ORDERS}/${id}`);
   return res.data;
 };
 

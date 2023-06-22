@@ -21,6 +21,7 @@ import ModalDeleteUser from '@/features/user/ModalDeleteUser';
 import { OrderType } from '@/types/order';
 import ModalAddOrder from '@/features/order/ModalAddOrder';
 import ModalDeleteOrder from '@/features/order/ModalDeleteOrder';
+import Head from 'next/head';
 
 const DashboardPage = (): JSX.Element => {
 
@@ -70,6 +71,11 @@ const DashboardPage = (): JSX.Element => {
   }
 
   return (
+    <>
+    <Head>
+        <title>Order Page</title>
+      </Head>
+    
     <Layout>
       <Box p={"50px"}>
         <VStack gap={8} alignItems="start" minW="full">
@@ -124,6 +130,7 @@ const DashboardPage = (): JSX.Element => {
         selectedData={selectedData}
       />
     </Layout>
+    </>
   );
 };
 

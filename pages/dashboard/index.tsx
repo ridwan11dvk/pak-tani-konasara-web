@@ -18,6 +18,7 @@ import Table from "@/components/Table";
 import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
 import { UserDataInterface } from '@/hooks/useLogin';
 import ModalDeleteUser from '@/features/user/ModalDeleteUser';
+import Head from 'next/head';
 
 const DashboardPage = (): JSX.Element => {
 
@@ -66,6 +67,10 @@ const DashboardPage = (): JSX.Element => {
   }
 
   return (
+    <>
+    <Head>
+        <title>User Page</title>
+      </Head>
     <Layout>
       <Box p={"50px"}>
         <VStack gap={8} alignItems="start" minW="full">
@@ -115,6 +120,7 @@ const DashboardPage = (): JSX.Element => {
         selectedData={selectedData}
       />
     </Layout>
+    </>
   );
 };
 

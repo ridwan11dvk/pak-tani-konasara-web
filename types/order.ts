@@ -27,8 +27,8 @@ export type AddOrderType = {
 };
 
 export type PatchAddOrderType = {
-  body: AddOrderType
-  id: string | string[]
+  body: AddOrderType;
+  id: string | string[];
 };
 
 export type OrderStatusType = {
@@ -47,6 +47,12 @@ export type OrderApiResponse = {
   limit: string;
   total: string;
   totalPages: string | number;
+};
+
+export type OrderApiDetailResponseType = {
+  status: boolean;
+  message: string;
+  data: OrderType;
 };
 
 export type AddOrderApiResponseType = {

@@ -86,7 +86,7 @@ export const useOrderHook = () => {
 
     const onSubmit = async (payload: AddOrderType): Promise<any> => {
         try {
-            const cpPayload: AddOrderType = { ...payload, id_user: selectedData ? userId ? userId : userData?._id : userData?._id  };
+            const cpPayload: AddOrderType = { ...payload, id_user: userId ? userId : userData?._id  };
 
             // Make the HTTP request to the backend server
             let response = null;
@@ -188,7 +188,8 @@ export const useDeleteOrder = () => {
 };
 
 export function ViewCell(value: any) {
-    return <Button colorScheme='blue'>View</Button>
+    const router = useRouter()
+    return <Button colorScheme='blue' onClick={() => router.push(`/dashboard/order/${value?._id}`)}>View</Button>
 }
 
 export function StatusComponent(value: OrderType) {

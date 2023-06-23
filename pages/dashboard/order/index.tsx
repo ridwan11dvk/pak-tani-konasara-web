@@ -13,6 +13,7 @@ import {
   TableContainer,
   HStack,
   useDisclosure,
+  FormLabel,
 } from '@chakra-ui/react';
 import Table from "@/components/Table";
 import { BsPencil, BsTrash3, BsSearch } from 'react-icons/bs'
@@ -34,7 +35,7 @@ const DashboardPage = (): JSX.Element => {
     mutationPost,
     onSubmit,
     orderForm,
-    selectedData, 
+    selectedData,
     handleSelectedData,
     mutationPatch,
     onDeleteOrder,
@@ -72,64 +73,88 @@ const DashboardPage = (): JSX.Element => {
 
   return (
     <>
-    <Head>
+      <Head>
         <title>Order Page</title>
       </Head>
-    
-    <Layout>
-      <Box p={"50px"}>
-        <VStack gap={8} alignItems="start" minW="full">
-          {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
-          <InputGroup size='md' >
-            <Input 
-            value={params.search} 
-            onChange={(e) => setQueryParams({ ...params, search: e.target.value })} 
-            placeholder='Search' backgroundColor="white" 
-            />
-            <InputRightAddon backgroundColor="white">
-              <Icon as={BsSearch} />
-            </InputRightAddon>
-          </InputGroup>
-          <Button colorScheme='green' onClick={() => {
-            orderForm.reset({})
-            onOpen()
-          }}>
-            New Order
-          </Button>
-          <Table
-            columns={orderColumns}
-            isLoading={isLoadingGetOrders}
-            data={dataOrders || []}
-            actionButton={true}
-            actionMenu={renderAction}
-            isSorting={true}
-            setQueryParams={setQueryParams}
-            queryParams={params}
-            totalPages={totalPages}
-          />
-        </VStack>
 
-      </Box>
-       <ModalAddOrder
-        onSubmit={onSubmit}
-        orderForm={orderForm}
-        isOpen={isOpen}
-        handleSelectedData={handleSelectedData}
-        onClose={onClose}
-        mutationPost={mutationPost}
-        mutationPatch={mutationPatch}
+      <Layout>
+        <Box p={"50px"}>
+          <VStack gap={8} alignItems="start" minW="full">
+            {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
+            <InputGroup size='md' >
+              <Input
+                value={params.search}
+                onChange={(e) => setQueryParams({ ...params, search: e.target.value })}
+                placeholder='Search' backgroundColor="white"
+              />
+              <InputRightAddon backgroundColor="white">
+                <Icon as={BsSearch} />
+              </InputRightAddon>
+            </InputGroup>
+            <HStack gap={4}>
+              <FormControl mb={4}>
+                <FormLabel>Start Date</FormLabel>
+                <Input
+
+                  value={params.startDate}
+                  onChange={(e) => setQueryParams({ ...params, startDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel>End Date</FormLabel>
+                <Input
+                  value={params.endDate}
+                  onChange={(e) => setQueryParams({ ...params, endDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+            </HStack>
+            <Button colorScheme='green' onClick={() => {
+              orderForm.reset({})
+              onOpen()
+            }}>
+              New Order
+            </Button>
+            
+            <Table
+              columns={orderColumns}
+              isLoading={isLoadingGetOrders}
+              data={dataOrders || []}
+              actionButton={true}
+              actionMenu={renderAction}
+              isSorting={true}
+              setQueryParams={setQueryParams}
+              queryParams={params}
+              totalPages={totalPages}
+            />
+          </VStack>
+
+        </Box>
+        <ModalAddOrder
+          onSubmit={onSubmit}
+          orderForm={orderForm}
+          isOpen={isOpen}
+          handleSelectedData={handleSelectedData}
+          onClose={onClose}
+          mutationPost={mutationPost}
+          mutationPatch={mutationPatch}
         // isLoadingForm={isLoadingForm}
         // isSuccessForm={isSuccessForm}
-      />
-      <ModalDeleteOrder
-        onDelete={onDeleteOrder}
-        isLoadingDelete={mutationDelete.isLoading}
-        isSuccessDelete={mutationDelete.isSuccess}
-        isOpen={isOpenDelete}
-        onClose={onCloseDelete}
-        selectedData={selectedData}
-      />
-    </Layout>
+        />
+        <ModalDeleteOrder
+          onDelete={onDeleteOrder}
+          isLoadingDelete={mutationDelete.isLoading}
+          isSuccessDelete={mutationDelete.isSuccess}
+          isOpen={isOpenDelete}
+          onClose={onCloseDelete}
+          selectedData={selectedData}
+        />
+      </Layout>
     </>
   );
 };

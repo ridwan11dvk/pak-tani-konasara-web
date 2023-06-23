@@ -13,6 +13,7 @@ import {
   TableContainer,
   HStack,
   useDisclosure,
+  FormLabel,
 } from '@chakra-ui/react';
 import Table from "@/components/Table";
 import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
@@ -89,6 +90,29 @@ const CandidatePage = (): JSX.Element => {
                 <Icon as={BsSearch} />
               </InputRightAddon>
             </InputGroup>
+            <HStack gap={4}>
+              <FormControl mb={4}>
+                <FormLabel>Start Date</FormLabel>
+                <Input
+
+                  value={params.startDate}
+                  onChange={(e) => setParams({ ...params, startDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel>End Date</FormLabel>
+                <Input
+                  value={params.endDate}
+                  onChange={(e) => setParams({ ...params, endDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+            </HStack>
             <HStack justifyContent="space-between" minW="full" spacing={4}>
               <Button colorScheme='green' onClick={() => {
                 onOpen()
@@ -103,6 +127,7 @@ const CandidatePage = (): JSX.Element => {
                 Export to Excel
               </Button>
             </HStack>
+            
             <Table
               columns={candidateColumns}
               isLoading={isLoading}

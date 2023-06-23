@@ -13,6 +13,7 @@ import {
   TableContainer,
   HStack,
   useDisclosure,
+  FormLabel,
 } from '@chakra-ui/react';
 import Table from "@/components/Table";
 import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
@@ -68,58 +69,82 @@ const DashboardPage = (): JSX.Element => {
 
   return (
     <>
-    <Head>
+      <Head>
         <title>User Page</title>
       </Head>
-    <Layout>
-      <Box p={"50px"}>
-        <VStack gap={8} alignItems="start" minW="full">
-          {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
-          <InputGroup size='md' >
-            <Input value={params.search} onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' backgroundColor="white" />
-            <InputRightAddon backgroundColor="white">
-              <Icon as={BsSearch} />
-            </InputRightAddon>
-          </InputGroup>
-          <Button colorScheme='green' onClick={() => {
-            onOpen()
-            userForm.reset()
-          }}>
-            New User
-          </Button>
-          <Table
-            columns={columnsUsers}
-            isLoading={isLoadingUsers}
-            data={dataUsers || []}
-            actionButton={true}
-            actionMenu={renderAction}
-            isSorting={true}
-            setQueryParams={setParams}
-            queryParams={params}
-            totalPages={totalPages}
-          />
-        </VStack>
+      <Layout>
+        <Box p={"50px"}>
+          <VStack gap={8} alignItems="start" minW="full">
+            {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
+            <InputGroup size='md' >
+              <Input value={params.search} onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' backgroundColor="white" />
+              <InputRightAddon backgroundColor="white">
+                <Icon as={BsSearch} />
+              </InputRightAddon>
+            </InputGroup>
+            <HStack gap={4}>
+              <FormControl mb={4}>
+                <FormLabel>Start Date</FormLabel>
+                <Input
+                  
+                  value={params.startDate}
+                  onChange={(e) => setParams({ ...params, startDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+              <FormControl mb={4}>
+                <FormLabel>End Date</FormLabel>
+                <Input
+                  value={params.endDate}
+                  onChange={(e) => setParams({ ...params, endDate: e.target.value })}
+                  bgColor="white"
+                  placeholder="Select Date"
+                  type="date"
+                />
+              </FormControl>
+            </HStack>
 
-      </Box>
-      <ModalUser
-        onSubmit={onSubmit}
-        userForm={userForm}
-        isOpen={isOpen}
-        handleSelectedData={handleSelectedData}
-        onClose={onClose}
-        mutationPost={mutationPost}
-        isLoadingForm={isLoadingForm}
-        isSuccessForm={isSuccessForm}
-      />
-      <ModalDeleteUser
-        onDelete={onDeleteUser}
-        isLoadingDelete={isLoadingDelete}
-        isSuccessDelete={isSuccessDelete}
-        isOpen={isOpenDelete}
-        onClose={onCloseDelete}
-        selectedData={selectedData}
-      />
-    </Layout>
+            <Button colorScheme='green' onClick={() => {
+              onOpen()
+              userForm.reset()
+            }}>
+              New User
+            </Button>
+            <Table
+              columns={columnsUsers}
+              isLoading={isLoadingUsers}
+              data={dataUsers || []}
+              actionButton={true}
+              actionMenu={renderAction}
+              isSorting={true}
+              setQueryParams={setParams}
+              queryParams={params}
+              totalPages={totalPages}
+            />
+          </VStack>
+
+        </Box>
+        <ModalUser
+          onSubmit={onSubmit}
+          userForm={userForm}
+          isOpen={isOpen}
+          handleSelectedData={handleSelectedData}
+          onClose={onClose}
+          mutationPost={mutationPost}
+          isLoadingForm={isLoadingForm}
+          isSuccessForm={isSuccessForm}
+        />
+        <ModalDeleteUser
+          onDelete={onDeleteUser}
+          isLoadingDelete={isLoadingDelete}
+          isSuccessDelete={isSuccessDelete}
+          isOpen={isOpenDelete}
+          onClose={onCloseDelete}
+          selectedData={selectedData}
+        />
+      </Layout>
     </>
   );
 };

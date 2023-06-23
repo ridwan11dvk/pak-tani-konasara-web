@@ -1,4 +1,5 @@
 import {
+  callerService,
   deleteUserService,
   patchUserService,
   postUserService,
@@ -21,8 +22,10 @@ import { UserDataInterface } from "./useLogin";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { defaultPerPage } from "@/utils/constant";
+import moment from "moment";
 
 const USERS_KEY = "users-key";
+const CALLERS_KEY = "callers-key";
 
 export const columnsUsers: any[] = [
   {
@@ -60,6 +63,8 @@ export const useUserHook = () => {
     page: 1,
     limit: defaultPerPage,
     search: "",
+    startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+    endDate: "",
   });
 
   const { userData } = useUserStore();
@@ -166,6 +171,12 @@ export function CustomCell(value: any) {
 export const useFetchUsers = (params: any) => {
   return useQuery<UserApiResponse, AxiosError>([USERS_KEY, params], () =>
     userService(params)
+  );
+};
+
+export const useFetchCallers = () => {
+  return useQuery<UserApiResponse, AxiosError>([USERS_KEY], () =>
+    callerService()
   );
 };
 

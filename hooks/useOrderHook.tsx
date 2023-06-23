@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import useUserStore from '@/stores/useUser';
 import { useHandlingHttpToast } from '@/utils/helper';
 import { useRouter } from 'next/router';
+import { useFetchCallers } from './useUserHook';
+import moment from 'moment';
 
 export const orderColumns: any[] = [
     {
@@ -53,9 +55,12 @@ export const useOrderHook = () => {
         page: 1,
         limit: defaultPerPage,
         search: "",
+        startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+        endDate: "",
     });
     const { data: dataOrders, isLoading, refetch } = useFetchOrders(params)
     const { data: dataOrdersById, isLoading: isLoadingFetchById, refetch: refetchByUserId } = useFetchOrdersByUserId(params, userId)
+    const { data: dataCallers, isLoading: isLoadingCallers, refetch: refetchCallers } = useFetchCallers()
     const mutationPost = usePostOrder();
     const mutationPatch = usePatchOrder();
     const mutationDelete = useDeleteOrder();
@@ -86,7 +91,7 @@ export const useOrderHook = () => {
 
     const onSubmit = async (payload: AddOrderType): Promise<any> => {
         try {
-            const cpPayload: AddOrderType = { ...payload, id_user: userId ? userId : userData?._id  };
+            const cpPayload: AddOrderType = { ...payload, id_user: userId ? userId : userData?._id };
 
             // Make the HTTP request to the backend server
             let response = null;
@@ -119,24 +124,24 @@ export const useOrderHook = () => {
 
     const onDeleteOrder = async (id: string) => {
         try {
-          const response = await mutationDelete.mutateAsync(id);
-          
-          successToast(response?.message);
-          handleSelectedData()
-          if (userId) {
-            refetchByUserId()
-        } else {
-            queryClient.invalidateQueries([ORDER_KEY]);
-        }
-          return response || null;
-          // Additional logic for handling the response
+            const response = await mutationDelete.mutateAsync(id);
+
+            successToast(response?.message);
+            handleSelectedData()
+            if (userId) {
+                refetchByUserId()
+            } else {
+                queryClient.invalidateQueries([ORDER_KEY]);
+            }
+            return response || null;
+            // Additional logic for handling the response
         } catch (error: any) {
-          // Show error toast notification
-          errorToast(error);
-    
-          // Additional error handling logic
+            // Show error toast notification
+            errorToast(error);
+
+            // Additional error handling logic
         }
-      }
+    }
 
     return ({
         dataOrders: dataOrdersById?.data ? dataOrdersById?.data || [] : dataOrders?.data || [],

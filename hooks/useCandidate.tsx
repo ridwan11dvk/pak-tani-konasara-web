@@ -9,6 +9,9 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import useUserStore from "@/stores/useUser";
 import { useHandlingHttpToast } from "@/utils/helper";
+import { Button } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import moment from "moment";
 
 export const candidateColumns: any[] = [
     {
@@ -22,6 +25,11 @@ export const candidateColumns: any[] = [
     {
         key: "phone_number",
         label: "Phone Number",
+    },
+    {
+        key: "cell",
+        label: "Detail",
+        render: (data: any) => ViewCell(data?.row?.original),
     }
 ];
 
@@ -46,6 +54,8 @@ export const useCandidate = () => {
         page: 1,
         limit: defaultPerPage,
         search: "",
+        startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+        endDate: "",
     });
 
     const { data, isLoading, refetch } = useFetchCandidates(params);
@@ -57,7 +67,11 @@ export const useCandidate = () => {
         if (params.limit || params.page || params.search) {
             refetch()
         }
-    }, [params.page, params.limit, params.search]);
+    }, [
+        params.page, 
+        params.limit, 
+        params.search
+    ]);
 
     const candidateForm = useForm<CandidateType>({
         resolver: yupResolver(schema),
@@ -130,6 +144,11 @@ export const useCandidate = () => {
         onDeleteCandidate,
         mutationDelete
     }
+}
+
+export function ViewCell(value: any) {
+    const router = useRouter()
+    return <Button colorScheme='blue' onClick={() => router.push(`/dashboard/candidate/${value?._id}`)}>View</Button>
 }
 
 export const useFetchCandidates = (params: any) => {

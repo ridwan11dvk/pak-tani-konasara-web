@@ -12,5 +12,6 @@ export const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL + '/' + VERSION
 export const AUTH_API = {
   LOGIN: `${BASE_API_URL}/auth/login`,
   USERS: `${BASE_API_URL}/users`,
-  ORDERS: `${BASE_API_URL}/orders`
+  ORDERS: `${BASE_API_URL}/orders`,
+  CANDIDATES: `${BASE_API_URL}/candidates`,
 }

@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import ModalUser from '@/features/user/ModalUser';
+import ModalCandidate from '@/features/candidate/ModalCandidate';
 import { useUserHook } from '@/hooks/useUserHook.tsx';
 import {
   Box, Button, FormControl, Icon, Input, InputGroup, InputRightAddon, Text, VStack,
@@ -20,39 +20,43 @@ import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
 import { UserDataInterface } from '@/hooks/useLogin';
 import ModalDeleteUser from '@/features/user/ModalDeleteUser';
 import Head from 'next/head';
+import { candidateColumns, useCandidate } from '@/hooks/useCandidate';
+import { CandidateType } from '@/types/candidate';
+import ModalDeleteCandidate from '@/features/candidate/ModalDeleteCandidate';
 
-const DashboardPage = (): JSX.Element => {
+const CandidatePage = (): JSX.Element => {
 
   const {
-    dataUsers,
-    columnsUsers,
+    dataCandidates,
     setParams,
     totalPages,
     params,
-    isLoadingUsers,
-    userForm,
+    isLoading,
+    candidateForm,
     onSubmit,
     mutationPost,
     selectedData,
     handleSelectedData,
-    isLoadingForm,
-    isSuccessForm,
-    onDeleteUser,
-    isLoadingDelete,
-    isSuccessDelete
-  } = useUserHook()
+    onDeleteCandidate,
+    mutationDelete
+    // isLoadingForm,
+    // isSuccessForm,
+    // onDeleteUser,
+    // isLoadingDelete,
+    // isSuccessDelete
+  } = useCandidate()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
 
 
-  const renderAction = (data: UserDataInterface) => {
+  const renderAction = (data: CandidateType) => {
     return (
       <HStack gap={4} >
         <Button onClick={() => {
           onOpen()
-          userForm.setValue('name', data.name)
-          userForm.setValue('email', data.email)
-          userForm.setValue('role', data.role)
+          candidateForm.setValue('name', data.name)
+          candidateForm.setValue('email', data.email)
+          candidateForm.setValue('phone_number', data.phone_number)
           handleSelectedData(data)
         }}>
           <Icon as={BsPencil} />
@@ -70,14 +74,18 @@ const DashboardPage = (): JSX.Element => {
   return (
     <>
       <Head>
-        <title>User Page</title>
+        <title>Candidate Page</title>
       </Head>
       <Layout>
         <Box p={"50px"}>
           <VStack gap={8} alignItems="start" minW="full">
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
-              <Input value={params.search} onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' backgroundColor="white" />
+              <Input
+                value={params.search} 
+                onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' 
+                backgroundColor="white"
+              />
               <InputRightAddon backgroundColor="white">
                 <Icon as={BsSearch} />
               </InputRightAddon>
@@ -86,7 +94,7 @@ const DashboardPage = (): JSX.Element => {
               <FormControl mb={4}>
                 <FormLabel>Start Date</FormLabel>
                 <Input
-                  
+
                   value={params.startDate}
                   onChange={(e) => setParams({ ...params, startDate: e.target.value })}
                   bgColor="white"
@@ -105,17 +113,25 @@ const DashboardPage = (): JSX.Element => {
                 />
               </FormControl>
             </HStack>
-
-            <Button colorScheme='green' onClick={() => {
-              onOpen()
-              userForm.reset()
-            }}>
-              New User
-            </Button>
+            <HStack justifyContent="space-between" minW="full" spacing={4}>
+              <Button colorScheme='green' onClick={() => {
+                onOpen()
+                candidateForm.reset()
+              }}>
+                New Candidate
+              </Button>
+              <Button colorScheme='blue' onClick={() => {
+                // onOpen()
+                // userForm.reset()
+              }}>
+                Export to Excel
+              </Button>
+            </HStack>
+            
             <Table
-              columns={columnsUsers}
-              isLoading={isLoadingUsers}
-              data={dataUsers || []}
+              columns={candidateColumns}
+              isLoading={isLoading}
+              data={dataCandidates}
               actionButton={true}
               actionMenu={renderAction}
               isSorting={true}
@@ -126,27 +142,25 @@ const DashboardPage = (): JSX.Element => {
           </VStack>
 
         </Box>
-        <ModalUser
+        <ModalCandidate
           onSubmit={onSubmit}
-          userForm={userForm}
+          candidateForm={candidateForm}
           isOpen={isOpen}
           handleSelectedData={handleSelectedData}
           onClose={onClose}
           mutationPost={mutationPost}
-          isLoadingForm={isLoadingForm}
-          isSuccessForm={isSuccessForm}
         />
-        <ModalDeleteUser
-          onDelete={onDeleteUser}
-          isLoadingDelete={isLoadingDelete}
-          isSuccessDelete={isSuccessDelete}
-          isOpen={isOpenDelete}
-          onClose={onCloseDelete}
-          selectedData={selectedData}
-        />
+        <ModalDeleteCandidate
+        onDelete={onDeleteCandidate}
+        isLoadingDelete={mutationDelete.isLoading}
+        isSuccessDelete={mutationDelete.isSuccess}
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        selectedData={selectedData}
+      />
       </Layout>
     </>
   );
 };
 
-export default DashboardPage;
+export default CandidatePage;

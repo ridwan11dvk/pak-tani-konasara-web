@@ -8,6 +8,11 @@ export const userService = async (payload: any) => {
     return res.data
 }
 
+export const callerService = async () => {
+    const res = await apiCall.get(`${AUTH_API.CALLERS}?page=1&limit=1000`)
+    return res.data
+}
+
 export const postUserService = async (payload: AddUserType) => {
     const res = await apiCall.post(`${AUTH_API.USERS}`, payload)
     return res.data

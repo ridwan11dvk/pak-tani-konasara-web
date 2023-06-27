@@ -90,6 +90,7 @@ export type TableProps<DataType extends {}> = {
     queryParams?: any
     totalPages?: any
     totalData?: number
+    isShowPagination?: boolean
 };
 
 type RowSelection = { [key: number]: boolean };
@@ -108,6 +109,7 @@ function TableContainer<DataType extends object>({
     isLoading,
     totalPages = 1,
     queryParams,
+    isShowPagination = true,
     ...props
 }: TableProps<DataType>) {
     const [rowSelection, setRowSelection] = useState<RowSelection>({});
@@ -443,7 +445,9 @@ function TableContainer<DataType extends object>({
 
 
                 </ChakraTable>
-                <Flex minW="full" flexDirection="row" gap={4} pt={4}>
+                {
+                    isShowPagination && (
+                        <Flex minW="full" flexDirection="row" gap={4} pt={4}>
 
                     <Button
                         className=""
@@ -516,6 +520,9 @@ function TableContainer<DataType extends object>({
                         ))}
                     </Select>
                 </Flex>
+                    )
+                }
+                
             </ChakraTableContainer>
         </>
 

@@ -8,6 +8,11 @@ export const candidateService = async (payload: any) => {
     return res.data
 }
 
+export const detailCandidateService = async (id: any) => {
+    const res = await apiCall.get(`${AUTH_API.CANDIDATES}/${id}`)
+    return res.data
+}
+
 export const postCandidateService = async (payload: CandidateType) => {
     const res = await apiCall.post(`${AUTH_API.CANDIDATES}`, payload)
     return res.data

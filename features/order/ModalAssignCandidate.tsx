@@ -1,5 +1,7 @@
 import { UserDataInterface } from "@/hooks/useLogin";
-import { CandidatePostApiResponseType, CandidateType } from "@/types/candidate";
+import { InsertManyCandidateApiResponseType, InsertManyCandidateType } from "@/types/candidate";
+import { SelectOptionType } from "@/types/form";
+import { AddOrderApiResponseType, AddOrderType, OrderType, PatchAddOrderType } from "@/types/order";
 import { AddUserType, PostUserApiResponse } from "@/types/user";
 import { roleOptions } from "@/utils/options";
 import {
@@ -19,39 +21,41 @@ import {
     FormErrorMessage,
     Input,
     Spinner,
+    Textarea,
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
+import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { UseMutationResult } from "react-query";
+import Select from 'react-select';
 
 
 interface ModalInterface {
     isOpen: boolean;
     onClose: () => void;
-    candidateForm: UseFormReturn<CandidateType>
-    mutationPost: UseMutationResult<CandidatePostApiResponseType, AxiosError, CandidateType>
-    onSubmit: (payload: CandidateType) => Promise<CandidatePostApiResponseType | undefined>
-    handleSelectedData: (data?: CandidateType) => void
+    form: UseFormReturn<InsertManyCandidateType>
+    mutationPost: UseMutationResult<InsertManyCandidateApiResponseType, AxiosError, InsertManyCandidateType>
+    onSubmit: (payload: InsertManyCandidateType) => Promise<any>
+    candidateOptions?: any[]
 }
 
-export default function ModalUser({
+export default function ModalAssignCandidate({
     isOpen,
     onClose,
-    candidateForm,
+    form,
     onSubmit,
     mutationPost,
-    handleSelectedData,
+    candidateOptions
 }: ModalInterface) {
 
-    const { register, setValue, watch, formState: { errors }, handleSubmit, reset } = candidateForm
+    const { register, setValue, formState: { errors }, handleSubmit, reset } = form
 
     return (
         <Modal
             closeOnOverlayClick={false}
             isOpen={isOpen}
             onClose={() => {
-                reset()
-                handleSelectedData()
+                reset({})
                 !mutationPost.isLoading && onClose()
             }}
             size="xl"
@@ -62,10 +66,10 @@ export default function ModalUser({
             <ModalContent>
                 <ModalHeader>
                     <Flex justifyContent="center">
-                        New Candidate
+                        Assign Candidate
                     </Flex>
                 </ModalHeader>
-                <ModalCloseButton onClick={onClose} />
+                <ModalCloseButton onClick={onClose}/>
                 <ModalBody>
                     <Box as={'form'} onSubmit={handleSubmit(async (payload) => {
                         const res = await onSubmit(payload)
@@ -73,25 +77,19 @@ export default function ModalUser({
                             onClose()
                         }
                     })} method="POST">
-                        <FormControl id="email" mb={4} isInvalid={errors?.name?.message ? true : false}>
-                            <FormLabel>Name</FormLabel>
-                            <Input type="text" {...register('name')} />
-                            <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
-                        </FormControl>
-                        <FormControl id="email" mb={4} isInvalid={errors?.email?.message ? true : false}>
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="text" {...register('email')} />
-                            <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
-                        </FormControl>
-                        <FormControl isInvalid={errors?.phone_number?.message ? true : false}>
-                            <FormLabel>Phone Number</FormLabel>
-                            <Input type="number" {...register('phone_number')} />
-                            <FormErrorMessage>{errors.phone_number && errors.phone_number.message}</FormErrorMessage>
-                        </FormControl>
-                        <HStack alignItems="center" justifyContent="space-between">
-                            {/* <Button colorScheme="blue" mt={8} onClick={onClose}>
-                                Import From Excel
-                            </Button> */}
+                        <FormControl isInvalid={errors?.id_candidates?.message ? true : false}>
+                                <FormLabel>Candidates</FormLabel>
+                                <Select
+                                    options={candidateOptions}
+                                    menuPosition={'fixed'}
+                                    {...register('id_candidates')}
+                                    onChange={(val: any) => setValue('id_candidates', val)}
+                                    placeholder="Please Select at least 1 candidate"
+                                    isMulti
+                                />
+                                <FormErrorMessage>{errors.id_candidates && errors.id_candidates.message}</FormErrorMessage>
+                            </FormControl>
+                        <HStack alignItems="center" justifyContent="end">
                             <HStack>
                                 <Button colorScheme="red" mt={8} onClick={onClose}>
                                     Cancel

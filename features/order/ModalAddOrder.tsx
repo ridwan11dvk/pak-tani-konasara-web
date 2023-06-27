@@ -1,4 +1,5 @@
 import { UserDataInterface } from "@/hooks/useLogin";
+import { SelectOptionType } from "@/types/form";
 import { AddOrderApiResponseType, AddOrderType, OrderType, PatchAddOrderType } from "@/types/order";
 import { AddUserType, PostUserApiResponse } from "@/types/user";
 import { roleOptions } from "@/utils/options";
@@ -36,6 +37,7 @@ interface ModalInterface {
     mutationPatch: UseMutationResult<AddOrderApiResponseType, AxiosError, PatchAddOrderType>
     onSubmit: (payload: AddOrderType) => Promise<any>
     handleSelectedData?: (data?: OrderType) => void
+    candidateOptions?: any[]
 }
 
 export default function ModalAddOrder({
@@ -45,7 +47,7 @@ export default function ModalAddOrder({
     onSubmit,
     mutationPost,
     handleSelectedData,
-    mutationPatch
+    mutationPatch,
 }: ModalInterface) {
 
     const { register, setValue, watch, formState: { errors }, handleSubmit, reset } = orderForm
@@ -118,6 +120,18 @@ export default function ModalAddOrder({
                             <Textarea {...register('detail')} />
                             <FormErrorMessage>{errors.detail && errors.detail.message}</FormErrorMessage>
                         </FormControl>
+                        {/* <FormControl maxW="200px" isInvalid={errors?.candidates?.message ? true : false}>
+                                <FormLabel>Caller</FormLabel>
+                                <Select
+                                    options={candidateOptions}
+                                    menuPosition={'fixed'}
+                                    {...register('candidates')}
+                                    onChange={(val: any) => setValue('candidates', val)}
+                                    placeholder=
+                                    isMulti
+                                />
+                                <FormErrorMessage>{errors.candidates && errors.candidates.message}</FormErrorMessage>
+                            </FormControl> */}
                         <HStack alignItems="center" justifyContent="end">
                             <HStack>
                                 <Button colorScheme="red" mt={8} onClick={onClose}>

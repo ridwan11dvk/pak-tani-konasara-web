@@ -77,7 +77,11 @@ const DashboardPage = (): JSX.Element => {
           <VStack gap={8} alignItems="start" minW="full">
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
-              <Input value={params.search} onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' backgroundColor="white" />
+              <Input value={params.search} onChange={(e) => setTimeout(() => {
+                setParams({ ...params, search: e.target.value })
+              }, 500)}
+                placeholder='Search' backgroundColor="white"
+              />
               <InputRightAddon backgroundColor="white">
                 <Icon as={BsSearch} />
               </InputRightAddon>
@@ -86,7 +90,7 @@ const DashboardPage = (): JSX.Element => {
               <FormControl mb={4}>
                 <FormLabel>Start Date</FormLabel>
                 <Input
-                  
+
                   value={params.startDate}
                   onChange={(e) => setParams({ ...params, startDate: e.target.value })}
                   bgColor="white"

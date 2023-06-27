@@ -23,9 +23,10 @@ import { OrderType } from '@/types/order';
 import ModalAddOrder from '@/features/order/ModalAddOrder';
 import ModalDeleteOrder from '@/features/order/ModalDeleteOrder';
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 const DashboardPage = (): JSX.Element => {
-
   const {
     dataOrders,
     isLoadingGetOrders,
@@ -43,6 +44,13 @@ const DashboardPage = (): JSX.Element => {
   } = useOrderHook()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
+
+  const [search, setSearch] = useState('')
+  const [value] = useDebounce(search, 800)
+
+  useEffect(() => {
+    setQueryParams((prev) => ({ ...prev, search: value }))
+  }, [value])
 
   const renderAction = (data: OrderType) => {
     return (
@@ -84,7 +92,9 @@ const DashboardPage = (): JSX.Element => {
             <InputGroup size='md' >
               <Input
                 value={params.search}
-                onChange={(e) => setQueryParams({ ...params, search: e.target.value })}
+                onChange={(e) =>
+                  setSearch(e.target.value)
+                }
                 placeholder='Search' backgroundColor="white"
               />
               <InputRightAddon backgroundColor="white">
@@ -120,7 +130,7 @@ const DashboardPage = (): JSX.Element => {
             }}>
               New Order
             </Button>
-            
+
             <Table
               columns={orderColumns}
               isLoading={isLoadingGetOrders}

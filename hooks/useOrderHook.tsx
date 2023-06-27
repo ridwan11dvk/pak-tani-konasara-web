@@ -5,15 +5,16 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { AddOrderApiResponseType, AddOrderType, OrderApiResponse, OrderType, PatchAddOrderType } from '@/types/order';
 import { deleteOrderService, orderByUserIdService, orderService, patchOrderService, postOrderService } from '@/services/order';
 import { AxiosError } from 'axios';
-import { defaultPerPage } from '@/utils/constant';
+import { ORDER_KEY, ROLE_STATUS, defaultPerPage } from '@/utils/constant';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from 'react-hook-form';
 import useUserStore from '@/stores/useUser';
 import { useHandlingHttpToast } from '@/utils/helper';
 import { useRouter } from 'next/router';
-import { useFetchCallers } from './useUserHook';
 import moment from 'moment';
+import { UserDataInterface } from './useLogin';
+import { useFetchCandidates } from './useCandidate';
 
 export const orderColumns: any[] = [
     {
@@ -34,16 +35,18 @@ export const orderColumns: any[] = [
     }
 ];
 
-const schema = yup
-    .object({
-        title: yup.string().required(),
-        order_date: yup.string().required(),
-        finish_by_days: yup.string().required(),
-        order_by: yup.string().required(),
-        overview: yup.string().required(),
-        detail: yup.string().required(),
-    })
-    .required();
+// const schema = yup
+//     .object({
+//         title: yup.string().required(),
+//         order_date: yup.string().required(),
+//         finish_by_days: yup.string().required(),
+//         order_by: yup.string().required(),
+//         overview: yup.string().required(),
+//         detail: yup.string().required(),
+//         // candidates: yup.mixed(),
+//         // id_user: yup.mixed().required(),
+//     })
+//     .required();
 
 export const useOrderHook = () => {
     const { query } = useRouter();
@@ -60,7 +63,6 @@ export const useOrderHook = () => {
     });
     const { data: dataOrders, isLoading, refetch } = useFetchOrders(params)
     const { data: dataOrdersById, isLoading: isLoadingFetchById, refetch: refetchByUserId } = useFetchOrdersByUserId(params, userId)
-    const { data: dataCallers, isLoading: isLoadingCallers, refetch: refetchCallers } = useFetchCallers()
     const mutationPost = usePostOrder();
     const mutationPatch = usePatchOrder();
     const mutationDelete = useDeleteOrder();
@@ -69,7 +71,7 @@ export const useOrderHook = () => {
     const queryClient = useQueryClient();
 
     const orderForm = useForm<AddOrderType>({
-        resolver: yupResolver(schema),
+        // resolver: yupResolver(schema),
     });
 
     useEffect(() => {
@@ -160,7 +162,6 @@ export const useOrderHook = () => {
     })
 }
 
-export const ORDER_KEY = "order-key";
 
 export const useFetchOrders = (params: any) => {
     return useQuery<OrderApiResponse, AxiosError>([ORDER_KEY, params], () =>

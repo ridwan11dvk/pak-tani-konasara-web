@@ -23,6 +23,8 @@ import Head from 'next/head';
 import { candidateColumns, useCandidate } from '@/hooks/useCandidate';
 import { CandidateType } from '@/types/candidate';
 import ModalDeleteCandidate from '@/features/candidate/ModalDeleteCandidate';
+import { useDebounce } from 'use-debounce';
+import { useEffect, useState } from 'react';
 
 const CandidatePage = (): JSX.Element => {
 
@@ -47,7 +49,12 @@ const CandidatePage = (): JSX.Element => {
   } = useCandidate()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
+  const [search, setSearch] = useState('')
+  const [value] = useDebounce(search, 800)
 
+  useEffect(() => {
+    setParams((prev) => ({ ...prev, search: value }))
+  }, [value])
 
   const renderAction = (data: CandidateType) => {
     return (
@@ -82,8 +89,11 @@ const CandidatePage = (): JSX.Element => {
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
               <Input
-                value={params.search} 
-                onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)}
+                // onChange={(e) => 
+                //   setParams({ ...params, search: e.target.value })
+                // }
                 backgroundColor="white"
               />
               <InputRightAddon backgroundColor="white">
@@ -120,12 +130,12 @@ const CandidatePage = (): JSX.Element => {
               }}>
                 New Candidate
               </Button>
-              <Button colorScheme='blue' onClick={() => {
+              {/* <Button colorScheme='blue' onClick={() => {
                 // onOpen()
                 // userForm.reset()
               }}>
                 Export to Excel
-              </Button>
+              </Button> */}
             </HStack>
             
             <Table

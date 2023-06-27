@@ -26,11 +26,11 @@ export const candidateColumns: any[] = [
         key: "phone_number",
         label: "Phone Number",
     },
-    {
-        key: "cell",
-        label: "Detail",
-        render: (data: any) => ViewCell(data?.row?.original),
-    }
+    // {
+    //     key: "cell",
+    //     label: "Detail",
+    //     render: (data: any) => ViewCell(data?.row?.original),
+    // }
 ];
 
 export const CANDIDATE_KEY = "candidate-key";

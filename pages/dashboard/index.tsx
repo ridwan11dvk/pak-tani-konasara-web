@@ -20,6 +20,8 @@ import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
 import { UserDataInterface } from '@/hooks/useLogin';
 import ModalDeleteUser from '@/features/user/ModalDeleteUser';
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 const DashboardPage = (): JSX.Element => {
 
@@ -43,6 +45,13 @@ const DashboardPage = (): JSX.Element => {
   } = useUserHook()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
+
+  const [search, setSearch] = useState('')
+  const [value] = useDebounce(search, 800)
+
+  useEffect(() => {
+    setParams((prev) => ({ ...prev, search: value }))
+  }, [value])
 
 
   const renderAction = (data: UserDataInterface) => {
@@ -77,7 +86,9 @@ const DashboardPage = (): JSX.Element => {
           <VStack gap={8} alignItems="start" minW="full">
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
-              <Input value={params.search} onChange={(e) => setParams({ ...params, search: e.target.value })} placeholder='Search' backgroundColor="white" />
+              <Input value={params.search} onChange={(e) => setSearch(e.target.value)}
+                placeholder='Search' backgroundColor="white"
+              />
               <InputRightAddon backgroundColor="white">
                 <Icon as={BsSearch} />
               </InputRightAddon>
@@ -86,7 +97,7 @@ const DashboardPage = (): JSX.Element => {
               <FormControl mb={4}>
                 <FormLabel>Start Date</FormLabel>
                 <Input
-                  
+
                   value={params.startDate}
                   onChange={(e) => setParams({ ...params, startDate: e.target.value })}
                   bgColor="white"

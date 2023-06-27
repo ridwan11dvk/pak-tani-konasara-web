@@ -14,13 +14,13 @@ export type LoginFormInputs = {
 };
 
 export interface UserDataInterface {
-  createdAt: string;
+  createdAt?: string;
   email: string;
   name: string;
   role: string;
-  updatedAt: string;
-  _id: string;
-  id_user_creator: string;
+  updatedAt?: string;
+  _id?: string;
+  id_user_creator?: string;
 }
 
 type LoginMutationResponse = {

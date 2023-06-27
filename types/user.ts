@@ -10,6 +10,12 @@ export type UserApiResponse = {
   totalPages: number;
 };
 
+export type DetailUserApiResponse = {
+  status: boolean;
+  message: string;
+  data: UserDataInterface;
+};
+
 export type PostUserApiResponse = {
   status: true;
   message: string;

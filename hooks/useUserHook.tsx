@@ -21,11 +21,9 @@ import useUserStore from "@/stores/useUser";
 import { UserDataInterface } from "./useLogin";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
-import { defaultPerPage } from "@/utils/constant";
+import { USERS_KEY, defaultPerPage } from "@/utils/constant";
 import moment from "moment";
 
-const USERS_KEY = "users-key";
-const CALLERS_KEY = "callers-key";
 
 export const columnsUsers: any[] = [
   {

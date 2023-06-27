@@ -10,17 +10,33 @@ export type CandidateType = {
   updatedAt?: string;
 };
 
-export type CandidateApiResponseType =
-  DefaultApiResponse & PaginationReponse & {
+export type CandidateApiResponseType = DefaultApiResponse &
+  PaginationReponse & {
     data: CandidateType[];
   };
 
-export type CandidatePostApiResponseType =
-  DefaultApiResponse & {
+export type InsertManyCandidateApiResponseType = DefaultApiResponse & {
+  data: {
+    id_order?: string;
+    id_candidates: string[];
+  };
+};
+
+export type InsertManyCandidateType = {
+  id_order: any;
+  id_candidates: any[];
+};
+
+export type DetailCandidateApiResponseType = DefaultApiResponse &
+  PaginationReponse & {
     data: CandidateType;
   };
 
-  export type PatchCandidateType = {
-    body: CandidateType;
-    id?: string | string[];
-  };
+export type CandidatePostApiResponseType = DefaultApiResponse & {
+  data: CandidateType;
+};
+
+export type PatchCandidateType = {
+  body: CandidateType;
+  id?: string | string[];
+};

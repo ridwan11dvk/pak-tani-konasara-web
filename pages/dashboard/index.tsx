@@ -50,8 +50,10 @@ const DashboardPage = (): JSX.Element => {
   const [value] = useDebounce(search, 800)
 
   useEffect(() => {
-    setParams((prev) => ({ ...prev, search: value }))
+    setParams({ ...params, search: value })
   }, [value])
+
+  
 
 
   const renderAction = (data: UserDataInterface) => {
@@ -86,8 +88,8 @@ const DashboardPage = (): JSX.Element => {
           <VStack gap={8} alignItems="start" minW="full">
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
-              <Input value={params.search} onChange={(e) => setSearch(e.target.value)}
-                placeholder='Search' backgroundColor="white"
+              <Input value={search} onChange={(e) => setSearch(e.target.value)}
+                placeholder='Search User' backgroundColor="white"
               />
               <InputRightAddon backgroundColor="white">
                 <Icon as={BsSearch} />
@@ -146,6 +148,7 @@ const DashboardPage = (): JSX.Element => {
           mutationPost={mutationPost}
           isLoadingForm={isLoadingForm}
           isSuccessForm={isSuccessForm}
+          selectedData={selectedData}
         />
         <ModalDeleteUser
           onDelete={onDeleteUser}

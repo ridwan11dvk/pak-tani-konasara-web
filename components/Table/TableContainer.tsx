@@ -117,12 +117,13 @@ function TableContainer<DataType extends object>({
     const [pageIndex, setPageindex] = useState(0);
     const [pageSize, setPageSize] = useState(defaultPerPage);
 
-    useEffect(() => {
+    useEffect(() => {   
         setQueryParams?.({
-            page: pageIndex + 1,
+            ...queryParams,
+            page: pageIndex + 1 > totalPages ? totalPages : pageIndex + 1,
             limit: pageSize
         })
-    }, [pageIndex, pageSize])
+    }, [pageIndex, pageSize, totalPages])
 
 
 
@@ -508,8 +509,9 @@ function TableContainer<DataType extends object>({
                     </Flex> */}
                     <Select
                         maxW="150px"
-                        value={table.getState().pagination.pageSize}
+                        value={queryParams?.limit || table.getState().pagination.pageSize}
                         onChange={e => {
+                            setPageindex(0)
                             setPageSize(Number(e.target.value))
                         }}
                     >

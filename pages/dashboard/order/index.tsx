@@ -91,11 +91,12 @@ const DashboardPage = (): JSX.Element => {
             {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
             <InputGroup size='md' >
               <Input
-                value={params.search}
+                value={search}
                 onChange={(e) =>
                   setSearch(e.target.value)
                 }
-                placeholder='Search' backgroundColor="white"
+                placeholder='Search Order'
+                 backgroundColor="white"
               />
               <InputRightAddon backgroundColor="white">
                 <Icon as={BsSearch} />

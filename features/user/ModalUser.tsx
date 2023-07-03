@@ -33,6 +33,7 @@ interface ModalInterface {
     mutationPost: UseMutationResult<PostUserApiResponse, AxiosError, AddUserType>
     onSubmit: (payload: AddUserType) => Promise<PostUserApiResponse | undefined>    
     handleSelectedData: (data?: UserDataInterface) => void
+    selectedData: UserDataInterface | null
     isLoadingForm: boolean
     isSuccessForm: boolean
 }
@@ -45,7 +46,8 @@ export default function ModalUser({
     mutationPost,
     handleSelectedData,
     isLoadingForm,
-    isSuccessForm
+    isSuccessForm,
+    selectedData
 }: ModalInterface) {
 
     const { register, setValue, watch, formState: { errors }, handleSubmit, reset } = userForm
@@ -54,6 +56,8 @@ export default function ModalUser({
             onClose()
         }
     },[isSuccessForm])
+
+    console.log('errors', errors)
 
     return (
         <Modal
@@ -92,6 +96,16 @@ export default function ModalUser({
                             <FormLabel>Email address</FormLabel>
                             <Input type="text" {...register('email')} />
                             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl id="email" mb={4} isInvalid={errors?.password?.message ? true : false}>
+                            <FormLabel>Password</FormLabel>
+                            <Input type="password" {...register('password', {required: selectedData ? false : true})} />
+                            <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl id="password_confirmation" mb={4} isInvalid={errors?.password_confirmation?.message ? true : false}>
+                            <FormLabel>Password Confirmation</FormLabel>
+                            <Input type="password" {...register('password_confirmation', {required: selectedData ? false : true})} />
+                            <FormErrorMessage>{errors.password_confirmation && errors.password_confirmation.message}</FormErrorMessage>
                         </FormControl>
                         <HStack alignItems="center" justifyContent="space-between">
                             <FormControl maxW="200px" isInvalid={errors?.role?.message ? true : false}>

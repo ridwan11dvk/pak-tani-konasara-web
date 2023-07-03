@@ -12,7 +12,7 @@ import {
 } from "@/types/user";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -50,8 +50,12 @@ const schema = yup
     name: yup.string().required(),
     email: yup.string().email().required(),
     role: yup.string().required(),
+    password: yup.string().optional(),
+    password_confirmation: yup.string()
+    .test('passwords-match', 'Passwords must match', function(value){
+      return this.parent.password === value
+    }).optional(),
   })
-  .required();
 
 export const useUserHook = () => {
   const [selectedData, setSelectedData] = useState<UserDataInterface | null>(
@@ -79,10 +83,24 @@ export const useUserHook = () => {
 
 
   useEffect(() => {
-    if (params.limit || params.page || params.search) {
+    if (
+      // params.limit || 
+      // params.page || 
+      // params.search ||
+      // params.startDate ||
+      // params.endDate
+      params
+      ) {
       refetch()
     }
-  }, [params.page, params.limit, params.search]);
+  }, [
+    params
+    // params.page, 
+    // params.limit, 
+    // params.search,
+    // params.startDate,
+    // params.endDate
+  ]);
 
   const handleSelectedData = (data?: UserDataInterface) => {
     if (data) {
@@ -94,13 +112,18 @@ export const useUserHook = () => {
 
   const onSubmit = async (payload: AddUserType): Promise<any> => {
     try {
-      const cpPayload: AddUserType = { ...payload };
-
+      const cpPayload = { ...payload };
+      if(!cpPayload.password) {
+        delete cpPayload.password
+      }
+      if(!cpPayload.password_confirmation) {
+        delete cpPayload.password_confirmation
+      }
       // Make the HTTP request to the backend server
       let response = null;
       if (!selectedData) {
-        cpPayload.password = "Password123!";
-        cpPayload.password_confirmation = "Password123!";
+        // cpPayload.password = "Password123!";
+        // cpPayload.password_confirmation = "Password123!";
         cpPayload.id_user_creator = userData?._id;
         response = await mutationPost.mutateAsync(cpPayload);
       } else {
@@ -129,7 +152,7 @@ export const useUserHook = () => {
       
       successToast(response?.message);
       handleSelectedData()
-      queryClient.invalidateQueries([USERS_KEY]);
+      refetch();
       return response || null;
       // Additional logic for handling the response
     } catch (error: any) {

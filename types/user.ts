@@ -22,12 +22,22 @@ export type PostUserApiResponse = {
   data: AddUserType;
 };
 
-export type AddUserType = {
-  id_user_creator?: string;
-  name: string;
-  email: string;
-  password?: string;
-  password_confirmation?: string;
-  role: string;
-  _id?: string;
-};
+  export type AddUserType = {
+    id_user_creator?: string;
+    name: string;
+    email: string;
+    password: string | undefined;
+    password_confirmation: string | undefined;
+    role: string;
+    _id?: string;
+  };
+
+  export type AddUserType2 = {
+    id_user_creator?: string;
+    name: string;
+    email: string;
+    // password: string;
+    // password_confirmation: string;
+    role: string;
+    _id?: string;
+  };

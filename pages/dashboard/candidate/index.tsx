@@ -91,6 +91,7 @@ const CandidatePage = (): JSX.Element => {
               <Input
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)}
+                placeholder='Search Candidate'
                 // onChange={(e) => 
                 //   setParams({ ...params, search: e.target.value })
                 // }
@@ -104,7 +105,7 @@ const CandidatePage = (): JSX.Element => {
               <FormControl mb={4}>
                 <FormLabel>Start Date</FormLabel>
                 <Input
-
+                
                   value={params.startDate}
                   onChange={(e) => setParams({ ...params, startDate: e.target.value })}
                   bgColor="white"

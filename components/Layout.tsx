@@ -12,7 +12,8 @@ const menus: any[] = [
   { name: 'User', path: '/dashboard', type: 'user' },
   { name: 'Order', path: '/dashboard/order', type: 'order' },
   { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' },
-  { name: 'Report', path: '/dashboard/report', type: 'report' }
+  { name: 'Report', path: '/dashboard/report', type: 'report' },
+  { name: 'Notification', path: '/dashboard/notification', type: 'notification' },
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {

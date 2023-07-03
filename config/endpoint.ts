@@ -17,4 +17,5 @@ export const AUTH_API = {
   CANDIDATES: `${BASE_API_URL}/candidates`,
   CALL_HISTORY: `${BASE_API_URL}/call-history`,
   CALL_LIST: `${BASE_API_URL}/call-list`,
+  NOTIFICATION: `${BASE_API_URL}/notification`,
 }

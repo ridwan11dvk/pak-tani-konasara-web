@@ -11,7 +11,8 @@ interface LayoutProps {
 const menus: any[] = [
   { name: 'User', path: '/dashboard', type: 'user' },
   { name: 'Order', path: '/dashboard/order', type: 'order' },
-  { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' }
+  { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' },
+  { name: 'Report', path: '/dashboard/report', type: 'report' }
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {

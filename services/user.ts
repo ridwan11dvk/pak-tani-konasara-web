@@ -28,6 +28,11 @@ export const patchUserService = async (payload: AddUserType, id: string) => {
     return res.data
 }
 
+export const patchUpdatePassword = async (id: string , payload: any) => {
+    const res = await apiCall.patch(`${AUTH_API.USERS}/update-password/${id}`, payload)
+    return res.data
+}
+
 export const deleteUserService = async (id: string) => {
     const res = await apiCall.delete(`${AUTH_API.USERS}/${id}`)
     return res.data

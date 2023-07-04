@@ -13,7 +13,6 @@ import {
   Button,
   Spinner,
   Flex,
-  Skeleton,
 } from '@chakra-ui/react'
 import Head from 'next/head'
 import React from 'react'

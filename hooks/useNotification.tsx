@@ -9,6 +9,7 @@ import { useFetchUsers } from "./useUserHook";
 import { ROLE_STATUS } from "@/utils/constant";
 import { useHandlingHttpToast } from "@/utils/helper";
 import useUserStore from "@/stores/useUser";
+import moment from "moment";
 
 
 export const useNotification = () => {
@@ -20,7 +21,9 @@ export const useNotification = () => {
         })
         .required();
 
-    const { data: dataUser, isLoading: isLoadingUsers } = useFetchUsers({})
+    const { data: dataUser, isLoading: isLoadingUsers } = useFetchUsers({
+        startDate: moment().subtract(3, 'months').format('YYYY-MM-DD')
+    })
     const { userData } = useUserStore()
     const { successToast, errorToast } = useHandlingHttpToast();
     const mutationPost = usePostNotification()

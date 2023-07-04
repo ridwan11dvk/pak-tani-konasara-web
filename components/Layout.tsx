@@ -3,6 +3,7 @@ import { Box, Button, Flex, HStack, Icon, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { CiLogout } from 'react-icons/ci'
+import { FaUser } from 'react-icons/fa'
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ interface LayoutProps {
 
 const menus: any[] = [
   { name: 'User', path: '/dashboard', type: 'user' },
+  { name: 'Profile', path: '/dashboard/profile', type: 'profile' },
   { name: 'Order', path: '/dashboard/order', type: 'order' },
   { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' },
   { name: 'Report', path: '/dashboard/report', type: 'report' },
@@ -42,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
                   {menu.name}</Text>
               })}
             </HStack>
-            <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{ cursor: 'pointer' }} />
+              <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{ cursor: 'pointer' }} />
           </Flex>
         </Box>
         {children}

@@ -50,7 +50,8 @@ export const orderColumns: any[] = [
 
 export const useOrderHook = () => {
     const { query } = useRouter();
-    const userId = query?.userId || '';
+    const { userData } = useUserStore();
+    const userId = query?.userId || userData?.role !== ROLE_STATUS.super_admin.value ? userData?._id || '' : '';
     const [selectedData, setSelectedData] = useState<OrderType | null>(
         null
     );
@@ -66,7 +67,6 @@ export const useOrderHook = () => {
     const mutationPost = usePostOrder();
     const mutationPatch = usePatchOrder();
     const mutationDelete = useDeleteOrder();
-    const { userData } = useUserStore();
     const { successToast, errorToast } = useHandlingHttpToast();
     const queryClient = useQueryClient();
 

@@ -1,6 +1,6 @@
-import { candidateService, deleteCandidateService, patchCandidateService, postCandidateService } from "@/services/candidate";
+import { candidateByUserIdService, candidateService, deleteCandidateService, patchCandidateService, postCandidateService } from "@/services/candidate";
 import { CandidateApiResponseType, CandidatePostApiResponseType, CandidateType, PatchCandidateType } from "@/types/candidate";
-import { defaultPerPage } from "@/utils/constant";
+import { CANDIDATE_BY_ID_KEY, CANDIDATE_KEY, ROLE_STATUS, defaultPerPage } from "@/utils/constant";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -33,7 +33,7 @@ export const candidateColumns: any[] = [
     // }
 ];
 
-export const CANDIDATE_KEY = "candidate-key";
+
 
 const schema = yup
     .object({
@@ -59,18 +59,18 @@ export const useCandidate = () => {
     });
 
     const { data, isLoading, refetch } = useFetchCandidates(params);
+    const { data: dataCandidateByids, isLoading: isLoadingCandidateByids, refetch: refetchCandidateByids } = useFetchCandidateByUserId(userData?._id || '', params);
     const mutationPost = usePostCandidate();
     const mutationPatch = usePatchCandidate();
     const mutationDelete = useDeleteOrder();
 
     useEffect(() => {
-        if (params.limit || params.page || params.search) {
+        if (params) {
             refetch()
+            refetchCandidateByids()
         }
     }, [
-        params.page, 
-        params.limit, 
-        params.search
+        params
     ]);
 
     const candidateForm = useForm<CandidateType>({
@@ -102,6 +102,7 @@ export const useCandidate = () => {
             }
             candidateForm.reset();
             queryClient.invalidateQueries([CANDIDATE_KEY]);
+            refetchCandidateByids()
             successToast(response?.message);
             handleSelectedData()
 
@@ -130,12 +131,12 @@ export const useCandidate = () => {
     }
 
     return {
-        dataCandidates: data?.data || [],
-        isLoading: isLoading || false,
+        dataCandidates: userData?.role !== ROLE_STATUS.super_admin.value ? dataCandidateByids?.data || [] : data?.data || [],
+        isLoading: isLoading || isLoadingCandidateByids || false,
         params,
         setParams,
-        totalData: data?.total,
-        totalPages: data?.totalPages,
+        totalData: userData?.role !== ROLE_STATUS.super_admin.value ? dataCandidateByids?.total : data?.total,
+        totalPages: userData?.role !== ROLE_STATUS.super_admin.value ? dataCandidateByids?.totalPages : data?.totalPages,
         onSubmit,
         candidateForm,
         mutationPost,
@@ -154,6 +155,12 @@ export function ViewCell(value: any) {
 export const useFetchCandidates = (params: any) => {
     return useQuery<CandidateApiResponseType, AxiosError>([CANDIDATE_KEY, params], () =>
         candidateService(params)
+    );
+};
+
+export const useFetchCandidateByUserId = (id: any, params: any) => {
+    return useQuery<CandidateApiResponseType, AxiosError>([CANDIDATE_BY_ID_KEY, params], () =>
+        candidateByUserIdService(id, params)
     );
 };
 

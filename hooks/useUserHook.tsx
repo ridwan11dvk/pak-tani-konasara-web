@@ -5,6 +5,7 @@ import {
   patchUserService,
   postUserService,
   userService,
+  userServiceByUserId,
 } from "@/services/user";
 import {
   UserApiResponse,
@@ -22,7 +23,7 @@ import useUserStore from "@/stores/useUser";
 import { UserDataInterface } from "./useLogin";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
-import { USERS_KEY, USER_DETAIL_KEY, defaultPerPage } from "@/utils/constant";
+import { ROLE_STATUS, USERS_BY_ID_KEY, USERS_KEY, USER_DETAIL_KEY, defaultPerPage } from "@/utils/constant";
 import moment from "moment";
 
 
@@ -71,9 +72,11 @@ export const useUserHook = () => {
   });
 
   const { userData } = useUserStore();
+  console.log('userData', userData)
   const { successToast, errorToast } = useHandlingHttpToast();
   const queryClient = useQueryClient();
   const { data: dataUsers, isLoading, refetch } = useFetchUsers(params);
+  const { data: dataUsersById, isLoading: isLoadingById, refetch: refetchUserById } = useFetchUserByUserId(userData?._id,params);
   const mutationPost = usePostUser();
   const mutationPatch = usePatchUser();
   const mutationDelete = useDeleteUser();
@@ -92,6 +95,7 @@ export const useUserHook = () => {
       // params.endDate
       params
       ) {
+        refetchUserById()
       refetch()
     }
   }, [
@@ -136,6 +140,7 @@ export const useUserHook = () => {
       successToast(response?.message);
       handleSelectedData()
       queryClient.invalidateQueries([USERS_KEY]);
+      refetchUserById()
       userForm.reset();
       return response || null;
       // Additional logic for handling the response
@@ -168,7 +173,7 @@ export const useUserHook = () => {
   return {
     totalData: dataUsers?.total,
     totalPages: dataUsers?.totalPages,
-    dataUsers: dataUsers?.data?.map((item) => ({  ...item, cell: CustomCell })),
+    dataUsers: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.data?.map((item) => ({  ...item, cell: CustomCell })) : dataUsers?.data?.map((item) => ({  ...item, cell: CustomCell })) || [],
     isLoadingUsers: isLoading,
     isLoadingForm: mutationPatch.isLoading || mutationPost.isLoading,
     isSuccessForm: mutationPatch.isSuccess || mutationPatch.isSuccess,
@@ -193,6 +198,12 @@ export function CustomCell(value: any) {
 export const useFetchUsers = (params: any) => {
   return useQuery<UserApiResponse, AxiosError>([USERS_KEY, params], () =>
     userService(params)
+  );
+};
+
+export const useFetchUserByUserId = (id: any, params: any) => {
+  return useQuery<UserApiResponse, AxiosError>([USERS_BY_ID_KEY, params], () =>
+    userServiceByUserId(id, params)
   );
 };
 

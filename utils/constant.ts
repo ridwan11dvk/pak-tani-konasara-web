@@ -5,8 +5,10 @@ export const POST_MESSAGE = "Data Has been Saved"
 export const ERROR_FILE_SIZE = "File can't exceed 12 MiB"
 
 export const USERS_KEY = "users-key";
+export const USERS_BY_ID_KEY = "users-by-id-key";
 export const USER_DETAIL_KEY = "user-detail-key";
 export const CANDIDATE_KEY = "candidate-key";
+export const CANDIDATE_BY_ID_KEY = "candidate-by-id-key";
 export const CANDIDATE_DETAIL_KEY = "candidate-detail-key";
 export const ORDER_KEY = "order-key";
 export const ORDER_DETAIL_KEY = "order-detail-key";
@@ -19,7 +21,7 @@ export const AUDIO_KEY = "audio-key";
 export const ROLE_STATUS = {
     super_admin: {
         label: 'Super Admin',
-        value: 'super_admin'
+        value: 'superadmin'
     },
     admin: {
         label: 'Admin',

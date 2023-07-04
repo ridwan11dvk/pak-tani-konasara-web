@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useFetchUsers } from "./useUserHook";
+import { useFetchUserByUserId, useFetchUsers } from "./useUserHook";
 import { ROLE_STATUS } from "@/utils/constant";
 import { useHandlingHttpToast } from "@/utils/helper";
 import useUserStore from "@/stores/useUser";
@@ -13,7 +13,7 @@ import moment from "moment";
 
 
 export const useNotification = () => {
-
+    const { userData } = useUserStore()
     const schema = yup
         .object({
             title: yup.string().required(),
@@ -24,7 +24,12 @@ export const useNotification = () => {
     const { data: dataUser, isLoading: isLoadingUsers } = useFetchUsers({
         startDate: moment().subtract(3, 'months').format('YYYY-MM-DD')
     })
-    const { userData } = useUserStore()
+
+    const { data: dataUserById, isLoading: isLoadingUserById } = useFetchUserByUserId(userData?._id || '', {
+        startDate: moment().subtract(3, 'months').format('YYYY-MM-DD')
+    })
+
+
     const { successToast, errorToast } = useHandlingHttpToast();
     const mutationPost = usePostNotification()
     const notificationForm = useForm<NotificationType>(
@@ -35,7 +40,7 @@ export const useNotification = () => {
 
     const onSubmit = async (payload: NotificationType) => {
         try {
-            const cpPayload = {...payload}
+            const cpPayload = { ...payload }
             cpPayload.id_user = userData?._id
             const data = await mutationPost.mutateAsync(cpPayload)
             successToast(data?.message);
@@ -51,7 +56,10 @@ export const useNotification = () => {
         notificationForm,
         mutationPost,
         onSubmit,
-        userOptions: dataUser?.data?.length ? [{label: 'All Users', value: ''},...dataUser?.data?.filter((el) => (el?.role === ROLE_STATUS.caller.value || el.role === ROLE_STATUS.user.value))?.map((ele) => ({...ele, value: ele?._id, label: ele?.name}))] : []
+        userOptions: userData?.role === ROLE_STATUS.super_admin.value ?
+        dataUser?.data?.length ? 
+        [{ label: 'All Users', value: '' }, ...dataUser?.data?.filter((el) => (el?.role === ROLE_STATUS.caller.value || el.role === ROLE_STATUS.user.value))?.map((ele) => ({ ...ele, value: ele?._id, label: ele?.name }))] 
+        : [] : dataUserById?.data?.length ? [{ label: 'All Users', value: '' }, ...dataUserById?.data?.filter((el) => (el?.role === ROLE_STATUS.caller.value || el.role === ROLE_STATUS.user.value))?.map((ele) => ({ ...ele, value: ele?._id, label: ele?.name }))] : []
     })
 }
 

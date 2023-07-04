@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useFetchCandidates } from "./useCandidate";
+import { useFetchCandidateByUserId, useFetchCandidates } from "./useCandidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { InsertManyCandidateApiResponseType, InsertManyCandidateType } from "@/types/candidate";
@@ -15,6 +15,7 @@ import { usePatchOrder } from "./useOrderHook";
 import { useFetchUsers } from "./useUserHook";
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
+import useUserStore from "@/stores/useUser";
 
 export const callListColumns: any[] = [
     {
@@ -74,13 +75,16 @@ const schema3 = yup.object({
 
 export const useDetailOrderHook = () => {
     const { query } = useRouter()
+    const { userData } = useUserStore()
     const id = query?.id || ""
     const [selectedData, setSelectedData] = useState<CallType | null>(
         null
     );
     const { data, isLoading, refetch } = useFetchDetailOrder(id);
-    const { data: dataCandidates, isLoading: isLoadingCandidate, refetch: refetchCandidates } = useFetchCandidates({ page: 1, limit: 1000, search: "" });
-    const { data: dataUser, isLoading: isLoadingUser } = useFetchUsers({ page: 1, limit: 1000, search: "" });
+    const { data: dataCandidates, isLoading: isLoadingCandidate, refetch: refetchCandidates } = useFetchCandidates({ page: 1, limit: 1000, search: "", startDate: moment().subtract(3, 'months').format('YYYY-MM-DD') });
+    const { data: dataUser, isLoading: isLoadingUser } = useFetchUsers({ page: 1, limit: 1000, search: "", startDate: moment().subtract(3, 'months').format('YYYY-MM-DD') });
+    const { data: dataCandidateByids, isLoading: isLoadingCandidateByids, refetch: refetchCandidateByids } = useFetchCandidateByUserId(userData?._id, { page: 1, limit: 1000, search: "", startDate: moment().subtract(3, 'months').format('YYYY-MM-DD') });
+    const { data: dataUserByIds, isLoading: isLoadingUserByIds, refetch: refetchUserByIds } = useFetchCandidateByUserId(userData?._id,{ page: 1, limit: 1000, search: "", startDate: moment().subtract(3, 'months').format('YYYY-MM-DD') });
     const mutationPost = usePostInsertManyCandidate()
     const mutationPatch = usePatchOrder()
     const mutationDelete = useDeleteCallList()
@@ -212,8 +216,10 @@ export const useDetailOrderHook = () => {
             last_contact: moment(el.last_contact).isValid() ? moment(el.last_contact).format('YYYY-MM-DD') : el?.last_contact 
         })) : [],
         callListColumns,
-        candidateOptions: dataCandidates?.data?.length ? dataCandidates?.data?.map((el) => ({ ...el, label: el?.name, value: el?._id })) : [],
-        callerOptions: dataUser?.data?.length ? dataUser?.data?.filter((el) => el?.role === ROLE_STATUS.caller.value)?.map((ele) => ({...ele, value: ele?._id, label: ele?.name})) : [],
+        candidateOptions: userData?.role !== ROLE_STATUS.super_admin.value ? dataCandidateByids?.data?.length ? dataCandidateByids?.data?.map((el) => ({ ...el, label: el?.name, value: el?._id })) : [] :
+        dataCandidates?.data?.length ? dataCandidates?.data?.map((el) => ({ ...el, label: el?.name, value: el?._id })) : [],
+        callerOptions: userData?.role !== ROLE_STATUS.super_admin.value ? dataUserByIds?.data?.length ? dataUserByIds?.data?.map((el) => ({...el, value: el?._id, label: el?.name})) : [] :
+        dataUser?.data?.length ? dataUser?.data?.filter((el) => el?.role === ROLE_STATUS.caller.value)?.map((ele) => ({...ele, value: ele?._id, label: ele?.name})) : [],
         isLoading: isLoading || isLoadingCandidate,
         onSubmit: onSubmitInsertManyCandidate,
         mutationPost,

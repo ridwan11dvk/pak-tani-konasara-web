@@ -8,6 +8,11 @@ export const userService = async (payload: any) => {
     return res.data
 }
 
+export const userServiceByUserId = async (id: any, payload: any, ) => {
+    const res = await apiCall.get(`${AUTH_API.USERS}/list/${id}?${serialize(payload)}`)
+    return res.data
+}
+
 export const detailUserService = async (id: any) => {
     const res = await apiCall.get(`${AUTH_API.USERS}/${id}`)
     return res.data
@@ -18,7 +23,7 @@ export const callerService = async () => {
     return res.data
 }
 
-export const postUserService = async (payload: AddUserType) => {
+export const postUserService = async (payload: AddUserType) => {    
     const res = await apiCall.post(`${AUTH_API.USERS}`, payload)
     return res.data
 }

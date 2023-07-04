@@ -1,9 +1,10 @@
 import useUserStore from '@/stores/useUser';
-import { Box, Button, Flex, HStack, Icon, Text } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { Box, Button, Flex, HStack, Icon, Text, Menu, MenuButton, MenuList, MenuItem, IconButton } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { CiLogout } from 'react-icons/ci'
-import { FaUser } from 'react-icons/fa'
+import { CiLogout, CiUser, CiLock } from 'react-icons/ci'
+import { FaLock, FaUser } from 'react-icons/fa'
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,7 +12,6 @@ interface LayoutProps {
 
 const menus: any[] = [
   { name: 'User', path: '/dashboard', type: 'user' },
-  { name: 'Profile', path: '/dashboard/profile', type: 'profile' },
   { name: 'Order', path: '/dashboard/order', type: 'order' },
   { name: 'Candidate', path: '/dashboard/candidate', type: 'candidate' },
   { name: 'Report', path: '/dashboard/report', type: 'report' },
@@ -44,7 +44,29 @@ const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
                   {menu.name}</Text>
               })}
             </HStack>
-              <Icon onClick={logout} as={CiLogout} boxSize={6} sx={{ cursor: 'pointer' }} />
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label='Options'
+                bgColor="white"
+                icon={<HamburgerIcon />}
+                variant='outline'
+              />
+              <MenuList>
+                <MenuItem as={Link} href="/dashboard/profile" color="black" sx={{ cursor: 'pointer' }}>
+                  <Icon color="black" as={CiUser} boxSize={6} />
+                  <Text pl={2}>Profile</Text>
+                </MenuItem>
+                <MenuItem as={Link} href="/dashboard/update-password" color="black" sx={{ cursor: 'pointer' }}>
+                  <Icon color="black" as={CiLock} boxSize={6} />
+                  <Text pl={2}>Update Password</Text>
+                </MenuItem>
+                <MenuItem as={HStack} onClick={logout} color="red" sx={{ cursor: 'pointer' }}>
+                  <Icon color="red" as={CiLogout} boxSize={6} />
+                  <Text pl={1}>Logout</Text>
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
         </Box>
         {children}

@@ -1,6 +1,7 @@
 import {
   callerService,
   deleteUserService,
+  detailUserService,
   patchUserService,
   postUserService,
   userService,
@@ -21,7 +22,7 @@ import useUserStore from "@/stores/useUser";
 import { UserDataInterface } from "./useLogin";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
-import { USERS_KEY, defaultPerPage } from "@/utils/constant";
+import { USERS_KEY, USER_DETAIL_KEY, defaultPerPage } from "@/utils/constant";
 import moment from "moment";
 
 
@@ -192,6 +193,12 @@ export function CustomCell(value: any) {
 export const useFetchUsers = (params: any) => {
   return useQuery<UserApiResponse, AxiosError>([USERS_KEY, params], () =>
     userService(params)
+  );
+};
+
+export const useFetchDetailUser = (id: string | string[]) => {
+  return useQuery<PostUserApiResponse, AxiosError>([USER_DETAIL_KEY, id], () =>
+      detailUserService(id), { enabled: !!id }
   );
 };
 

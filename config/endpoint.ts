@@ -18,4 +18,5 @@ export const AUTH_API = {
   CALL_HISTORY: `${BASE_API_URL}/call-history`,
   CALL_LIST: `${BASE_API_URL}/call-list`,
   NOTIFICATION: `${BASE_API_URL}/notification`,
+  PROFILE: `${BASE_API_URL}/profile`,
 }

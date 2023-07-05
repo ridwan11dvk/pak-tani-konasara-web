@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useFetchOrders } from "./useOrderHook";
 import { CallType } from "@/types/order";
+import moment from "moment";
 
 export const useReport = () => {
     const [tabIndex, setTabIndex] = useState(0)
-    const { data: dataOrders, isLoading, refetch } = useFetchOrders({})
+    const { data: dataOrders, isLoading, refetch } = useFetchOrders({ page: 1, limit: 1000, search: "", startDate: moment().subtract(3, 'months').format('YYYY-MM-DD') })
 
     const [callPositiveArr, setCallPositiveArr] = useState<CallType[]>([])
     const [callNegativeArr, setCallNegativeArr] = useState<CallType[]>([])
     const [callFollowUpArr, setCallFollowUpArr] = useState<CallType[]>([])
-
+    console.log('callPositiveArr', callPositiveArr)
 
     useEffect(() => {
         if (dataOrders?.data?.length){

@@ -150,7 +150,7 @@ export const useOrderHook = () => {
         isLoadingGetOrders: isLoading || isLoadingFetchById,
         setQueryParams: setParams,
         params,
-        totalPages: dataOrders?.totalPages || 0,
+        totalPages: userData?.role === ROLE_STATUS.super_admin.value ? dataOrders?.totalPages || 0 : dataOrdersById?.totalPages || 0,
         orderForm,
         mutationPost,
         mutationPatch,

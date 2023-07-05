@@ -171,8 +171,8 @@ export const useUserHook = () => {
 
 
   return {
-    totalData: dataUsers?.total,
-    totalPages: dataUsers?.totalPages,
+    totalData: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.total : dataUsers?.total,
+    totalPages: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.totalPages : dataUsers?.totalPages,
     dataUsers: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.data?.map((item) => ({  ...item, cell: CustomCell })) : dataUsers?.data?.map((item) => ({  ...item, cell: CustomCell })) || [],
     isLoadingUsers: isLoading,
     isLoadingForm: mutationPatch.isLoading || mutationPost.isLoading,

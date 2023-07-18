@@ -54,9 +54,9 @@ const schema = yup
     role: yup.string().required(),
     password: yup.string().optional(),
     password_confirmation: yup.string()
-    .test('passwords-match', 'Passwords must match', function(value){
-      return this.parent.password === value
-    }).optional(),
+      .test('passwords-match', 'Passwords must match', function (value) {
+        return this.parent.password === value
+      }).optional(),
   })
 
 export const useUserHook = () => {
@@ -72,11 +72,10 @@ export const useUserHook = () => {
   });
 
   const { userData } = useUserStore();
-  console.log('userData', userData)
   const { successToast, errorToast } = useHandlingHttpToast();
   const queryClient = useQueryClient();
   const { data: dataUsers, isLoading, refetch } = useFetchUsers(params);
-  const { data: dataUsersById, isLoading: isLoadingById, refetch: refetchUserById } = useFetchUserByUserId(userData?._id,params);
+  const { data: dataUsersById, isLoading: isLoadingById, refetch: refetchUserById } = useFetchUserByUserId(userData?._id, params);
   const mutationPost = usePostUser();
   const mutationPatch = usePatchUser();
   const mutationDelete = useDeleteUser();
@@ -88,23 +87,24 @@ export const useUserHook = () => {
 
   useEffect(() => {
     if (
-      // params.limit || 
-      // params.page || 
-      // params.search ||
-      // params.startDate ||
-      // params.endDate
-      params
-      ) {
-        refetchUserById()
+      params.limit || 
+      params.page || 
+      params.search ||
+      params.startDate ||
+      params.endDate
+      // params
+    ) {
+      console.log('call me')
+      refetchUserById()
       refetch()
     }
   }, [
-    params
-    // params.page, 
-    // params.limit, 
-    // params.search,
-    // params.startDate,
-    // params.endDate
+    // params
+    params.page, 
+    params.limit, 
+    params.search,
+    params.startDate,
+    params.endDate
   ]);
 
   const handleSelectedData = (data?: UserDataInterface) => {
@@ -118,10 +118,10 @@ export const useUserHook = () => {
   const onSubmit = async (payload: AddUserType): Promise<any> => {
     try {
       const cpPayload = { ...payload };
-      if(!cpPayload.password) {
+      if (!cpPayload.password) {
         delete cpPayload.password
       }
-      if(!cpPayload.password_confirmation) {
+      if (!cpPayload.password_confirmation) {
         delete cpPayload.password_confirmation
       }
       // Make the HTTP request to the backend server
@@ -155,7 +155,7 @@ export const useUserHook = () => {
   const onDeleteUser = async (id: string) => {
     try {
       const response = await mutationDelete.mutateAsync(id);
-      
+
       successToast(response?.message);
       handleSelectedData()
       refetch();
@@ -173,7 +173,7 @@ export const useUserHook = () => {
   return {
     totalData: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.total : dataUsers?.total,
     totalPages: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.totalPages : dataUsers?.totalPages,
-    dataUsers: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.data?.map((item) => ({  ...item, cell: CustomCell })) : dataUsers?.data?.map((item) => ({  ...item, cell: CustomCell })) || [],
+    dataUsers: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.data?.map((item) => ({ ...item, cell: CustomCell })) : dataUsers?.data?.map((item) => ({ ...item, cell: CustomCell })) || [],
     isLoadingUsers: isLoading,
     isLoadingForm: mutationPatch.isLoading || mutationPost.isLoading,
     isSuccessForm: mutationPatch.isSuccess || mutationPatch.isSuccess,
@@ -187,7 +187,7 @@ export const useUserHook = () => {
     handleSelectedData,
     onDeleteUser,
     isLoadingDelete: mutationDelete.isLoading,
-    isSuccessDelete: mutationDelete.isSuccess ,
+    isSuccessDelete: mutationDelete.isSuccess,
   };
 };
 
@@ -209,7 +209,7 @@ export const useFetchUserByUserId = (id: any, params: any) => {
 
 export const useFetchDetailUser = (id: string | string[]) => {
   return useQuery<PostUserApiResponse, AxiosError>([USER_DETAIL_KEY, id], () =>
-      detailUserService(id), { enabled: !!id }
+    detailUserService(id), { enabled: !!id }
   );
 };
 

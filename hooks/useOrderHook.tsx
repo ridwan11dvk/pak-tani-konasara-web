@@ -76,6 +76,7 @@ export const useOrderHook = () => {
 
     useEffect(() => {
         if (params.limit || params.page || params.search) {
+            console.log('refetch')
             if (userId) {
                 refetchByUserId()
             }

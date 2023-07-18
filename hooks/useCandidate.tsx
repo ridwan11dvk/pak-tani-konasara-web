@@ -1,4 +1,4 @@
-import { candidateByUserIdService, candidateService, deleteCandidateService, patchCandidateService, postCandidateService } from "@/services/candidate";
+import { candidateByUserIdService, candidateService, deleteCandidateService, patchCandidateService, postCandidateService, postMultiCandidateService } from "@/services/candidate";
 import { CandidateApiResponseType, CandidatePostApiResponseType, CandidateType, PatchCandidateType } from "@/types/candidate";
 import { CANDIDATE_BY_ID_KEY, CANDIDATE_KEY, ROLE_STATUS, defaultPerPage } from "@/utils/constant";
 import { AxiosError } from "axios";
@@ -65,12 +65,17 @@ export const useCandidate = () => {
     const mutationDelete = useDeleteOrder();
 
     useEffect(() => {
-        if (params) {
+        if (params.page || params.limit || params.search || params.startDate || params.endDate) {
             refetch()
             refetchCandidateByids()
         }
     }, [
-        params
+        params.page,
+        params.limit,
+        params.search,
+        params.startDate,
+        params.endDate,
+        
     ]);
 
     const candidateForm = useForm<CandidateType>({
@@ -167,6 +172,12 @@ export const useFetchCandidateByUserId = (id: any, params: any) => {
 export const usePostCandidate = () => {
     return useMutation<CandidatePostApiResponseType, AxiosError, CandidateType>((data) =>
         postCandidateService(data)
+    );
+};
+
+export const useMultiPostCandidate = () => {
+    return useMutation<any, AxiosError, any>((data) =>
+        postMultiCandidateService(data)
     );
 };
 

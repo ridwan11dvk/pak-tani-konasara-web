@@ -23,6 +23,11 @@ export const postCandidateService = async (payload: CandidateType) => {
     return res.data
 }
 
+export const postMultiCandidateService = async (payload: any) => {
+    const res = await apiCall.post(`${AUTH_API.CANDIDATES}/excel`, payload)
+    return res.data
+}
+
 export const patchCandidateService = async (payload: PatchCandidateType) => {
     const res = await apiCall.patch(`${AUTH_API.CANDIDATES}/${payload.id}`, payload.body)
     return res.data

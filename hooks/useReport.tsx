@@ -10,8 +10,8 @@ export const useReport = () => {
     const [callPositiveArr, setCallPositiveArr] = useState<CallType[]>([])
     const [callNegativeArr, setCallNegativeArr] = useState<CallType[]>([])
     const [callFollowUpArr, setCallFollowUpArr] = useState<CallType[]>([])
-    console.log('callPositiveArr', callPositiveArr)
 
+    
     useEffect(() => {
         if (dataOrders?.data?.length){
             let cpArrPositive: CallType[] = []

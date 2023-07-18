@@ -31,7 +31,7 @@ interface ModalInterface {
     onClose: () => void;
     userForm: UseFormReturn<AddUserType>
     mutationPost: UseMutationResult<PostUserApiResponse, AxiosError, AddUserType>
-    onSubmit: (payload: AddUserType) => Promise<PostUserApiResponse | undefined>    
+    onSubmit: (payload: AddUserType) => Promise<PostUserApiResponse | undefined>
     handleSelectedData: (data?: UserDataInterface) => void
     selectedData: UserDataInterface | null
     isLoadingForm: boolean
@@ -52,12 +52,11 @@ export default function ModalUser({
 
     const { register, setValue, watch, formState: { errors }, handleSubmit, reset } = userForm
     useEffect(() => {
-        if(isSuccessForm) {
+        if (isSuccessForm) {
             onClose()
         }
-    },[isSuccessForm])
+    }, [isSuccessForm])
 
-    console.log('errors', errors)
 
     return (
         <Modal
@@ -76,17 +75,17 @@ export default function ModalUser({
             <ModalContent>
                 <ModalHeader>
                     <Flex justifyContent="center">
-                        New User
+                        {selectedData ? 'Edit User' : 'New User'}
                     </Flex>
                 </ModalHeader>
-                <ModalCloseButton onClick={onClose}/>
+                <ModalCloseButton onClick={onClose} />
                 <ModalBody>
-                    <Box as={'form'} onSubmit={handleSubmit(async(payload) => {
+                    <Box as={'form'} onSubmit={handleSubmit(async (payload) => {
                         const res = await onSubmit(payload)
-                        if(res?.data) {
+                        if (res?.data) {
                             onClose()
                         }
-                        })} method="POST">
+                    })} method="POST">
                         <FormControl id="email" mb={4} isInvalid={errors?.name?.message ? true : false}>
                             <FormLabel>Name</FormLabel>
                             <Input type="text" {...register('name')} />
@@ -97,16 +96,22 @@ export default function ModalUser({
                             <Input type="text" {...register('email')} />
                             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
                         </FormControl>
-                        <FormControl id="email" mb={4} isInvalid={errors?.password?.message ? true : false}>
-                            <FormLabel>Password</FormLabel>
-                            <Input type="password" {...register('password', {required: selectedData ? false : true})} />
-                            <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
-                        </FormControl>
-                        <FormControl id="password_confirmation" mb={4} isInvalid={errors?.password_confirmation?.message ? true : false}>
-                            <FormLabel>Password Confirmation</FormLabel>
-                            <Input type="password" {...register('password_confirmation', {required: selectedData ? false : true})} />
-                            <FormErrorMessage>{errors.password_confirmation && errors.password_confirmation.message}</FormErrorMessage>
-                        </FormControl>
+                        {
+                            !selectedData && (
+                                <>
+                                    <FormControl id="email" mb={4} isInvalid={errors?.password?.message ? true : false}>
+                                        <FormLabel>Password</FormLabel>
+                                        <Input type="password" {...register('password', { required: selectedData ? false : true })} />
+                                        <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
+                                    </FormControl>
+                                    <FormControl id="password_confirmation" mb={4} isInvalid={errors?.password_confirmation?.message ? true : false}>
+                                        <FormLabel>Password Confirmation</FormLabel>
+                                        <Input type="password" {...register('password_confirmation', { required: selectedData ? false : true })} />
+                                        <FormErrorMessage>{errors.password_confirmation && errors.password_confirmation.message}</FormErrorMessage>
+                                    </FormControl>
+                                </>
+                            )
+                        }
                         <HStack alignItems="center" justifyContent="space-between">
                             <FormControl maxW="200px" isInvalid={errors?.role?.message ? true : false}>
                                 <FormLabel>Role</FormLabel>
@@ -126,9 +131,9 @@ export default function ModalUser({
                                 <Button type="submit" colorScheme="green" mt={8} isDisabled={isLoadingForm}>
                                     {
                                         isLoadingForm ?
-                                        <Spinner size="xs" />
-                                        :
-                                        'Confirm'
+                                            <Spinner size="xs" />
+                                            :
+                                            'Confirm'
                                     }
                                 </Button>
                             </HStack>

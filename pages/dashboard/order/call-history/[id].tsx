@@ -9,10 +9,11 @@ import { BsSearch, BsTrash3 } from "react-icons/bs"
 import Select from 'react-select'
 
 const CallHistory = () => {
-    const { query } = useRouter()
+    const { query, push } = useRouter()
     const name = query?.name || '-'
     const phone_number = query?.phone_number || '-'
     const email = query?.email || '-'
+    const id_order = query?.id_order || '-'
     const {
         dataCallHistories,
         callHistoryColumns,
@@ -43,6 +44,9 @@ const CallHistory = () => {
             <Layout>
                 <Flex direction="column" w="100%" justifyContent="center" alignItems="center">
                     <VStack p={10} gap={8} justifyContent="center" w="80%">
+                        <Button  onClick={() => push(`/dashboard/order/${id_order}`)} colorScheme="blue" alignSelf="start">
+                            Detail Order
+                        </Button>
                         <FormControl id="email">
                             <FormLabel>Name</FormLabel>
                             <Input disabled bgColor="white" type="text" value={name} />
@@ -54,6 +58,10 @@ const CallHistory = () => {
                         <FormControl id="email">
                             <FormLabel>Phone Number</FormLabel>
                             <Input disabled bgColor="white" type="text" value={phone_number} />
+                        </FormControl>
+                        <FormControl id="email">
+                            <FormLabel>Order Id</FormLabel>
+                            <Input disabled bgColor="white" type="text" value={id_order} />
                         </FormControl>
                     </VStack>
                     <VStack justifyContent="center" w="80%">

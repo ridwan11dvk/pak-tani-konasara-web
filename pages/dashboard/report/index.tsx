@@ -40,14 +40,16 @@ const Report = () => {
                             <TabPanel>
                                 <VStack minW="full">
                                     {callPositiveArr?.length ? callPositiveArr?.map((call, index) => {
+                                        console.log(call)
                                         return <HStack sx={{
                                             cursor: 'pointer'
-                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
+                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email, id_order: call.id_order })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
                                             <CheckIcon boxSize={10} color="green" />
                                             <VStack alignItems="start" pl={4} w="full">
                                                 <Text>{call?.name}</Text>
                                                 <Text>{call?.phone_number}</Text>
                                                 <Text>{call?.email}</Text>
+                                                <Text>Order UID : {call?.id_order}</Text>
                                                 <Text alignSelf="end">Last Contact: {call?.last_contact}</Text>
                                             </VStack>
 
@@ -60,12 +62,13 @@ const Report = () => {
                                     {callNegativeArr?.length ? callNegativeArr?.map((call, index) => {
                                         return <HStack sx={{
                                             cursor: 'pointer'
-                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
+                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email, id_order: call.id_order })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
                                             <CloseIcon boxSize={10} color="red" />
                                             <VStack alignItems="start" pl={4} w="full">
                                                 <Text>{call?.name}</Text>
                                                 <Text>{call?.phone_number}</Text>
                                                 <Text>{call?.email}</Text>
+                                                <Text>Order UID : {call?.id_order}</Text>
                                                 <Text alignSelf="end">Last Contact: {call?.last_contact}</Text>
                                             </VStack>
 
@@ -78,12 +81,13 @@ const Report = () => {
                                     {callFollowUpArr?.length ? callFollowUpArr?.map((call, index) => {
                                         return <HStack sx={{
                                             cursor: 'pointer'
-                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
+                                        }} onClick={() => router.push(`/dashboard/order/call-history/${call._id}?${serialize({ name: call.name, phone_number: call.phone_number, email: call.email, id_order: call.id_order })}`)} key={index} minW="full" borderWidth={1} borderRadius="md" p={4} bgColor="white">
                                             <Icon as={AiOutlineQuestion} boxSize={12} color="black" />
                                             <VStack alignItems="start" pl={4} w="full">
                                                 <Text>{call?.name}</Text>
                                                 <Text>{call?.phone_number}</Text>
                                                 <Text>{call?.email}</Text>
+                                                <Text>Order UID : {call?.id_order}</Text>
                                                 <Text alignSelf="end">Last Contact: {call?.last_contact}</Text>
                                             </VStack>
 

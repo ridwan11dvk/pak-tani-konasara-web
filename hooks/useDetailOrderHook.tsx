@@ -263,6 +263,6 @@ export const usePatchCallList = () => {
 
 export function ViewCell(value: any) {
     const router = useRouter()
-    return <Button colorScheme='blue' onClick={() => router.push(`/dashboard/order/call-history/${value._id}?${serialize({ name: value.name, phone_number: value.phone_number, email: value.email })}`)}>View</Button>
+    return <Button colorScheme='blue' onClick={() => router.push(`/dashboard/order/call-history/${value._id}?${serialize({ name: value.name, phone_number: value.phone_number, email: value.email, id_order: value.id_order })}`)}>View</Button>
 }
 

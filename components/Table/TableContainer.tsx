@@ -226,11 +226,11 @@ function TableContainer<DataType extends object>({
         getFacetedMinMaxValues: getFacetedMinMaxValues(),
     });
 
-    useEffect(() => {
-        if (isLoading) {
-            setRowSelection([])
-        }
-    }, [isLoading])
+    // useEffect(() => {
+    //     if (isLoading) {
+    //         setRowSelection([])
+    //     }
+    // }, [isLoading])
 
     useEffect(() => {
         const selectedData = data.filter(
@@ -254,15 +254,15 @@ function TableContainer<DataType extends object>({
         // w: "calc(100% - 5px)"
     };
 
-    if (isLoading) {
-        return (
-            <TableLoader
-                columnSize={columnsProp.length}
-                isSelectable={isSelectable}
-                hasActions={Boolean(props.rowActions?.length)}
-            />
-        )
-    }
+    // if (isLoading) {
+    //     return (
+    //         <TableLoader
+    //             columnSize={columnsProp.length}
+    //             isSelectable={isSelectable}
+    //             hasActions={Boolean(props.rowActions?.length)}
+    //         />
+    //     )
+    // }
 
     return (
         <>

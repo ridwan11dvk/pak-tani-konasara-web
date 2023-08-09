@@ -1,3 +1,6 @@
+import { UserDataInterface } from "@/hooks/useLogin";
+import { AddUserType, PostUserApiResponse } from "@/types/user";
+import { roleOptions } from "@/utils/options";
 import {
     Box,
     FormControl,
@@ -12,26 +15,58 @@ import {
     Button,
     Flex,
     FormLabel,
+    FormErrorMessage,
     Input,
-    Select
+    Spinner,
 } from "@chakra-ui/react";
+import { AxiosError } from "axios";
+import { useEffect } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { UseMutationResult } from "react-query";
+import Select from 'react-select';
 
 
 interface ModalInterface {
     isOpen: boolean;
     onClose: () => void;
+    userForm: UseFormReturn<AddUserType>
+    mutationPost: UseMutationResult<PostUserApiResponse, AxiosError, AddUserType>
+    onSubmit: (payload: AddUserType) => Promise<PostUserApiResponse | undefined>
+    handleSelectedData: (data?: UserDataInterface) => void
+    selectedData: UserDataInterface | null
+    isLoadingForm: boolean
+    isSuccessForm: boolean
 }
 
 export default function ModalUser({
     isOpen,
     onClose,
+    userForm,
+    onSubmit,
+    mutationPost,
+    handleSelectedData,
+    isLoadingForm,
+    isSuccessForm,
+    selectedData
 }: ModalInterface) {
+
+    const { register, setValue, watch, formState: { errors }, handleSubmit, reset } = userForm
+    useEffect(() => {
+        if (isSuccessForm) {
+            onClose()
+        }
+    }, [isSuccessForm])
+
 
     return (
         <Modal
             closeOnOverlayClick={false}
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={() => {
+                reset()
+                handleSelectedData()
+                !isLoadingForm && onClose()
+            }}
             size="xl"
             scrollBehavior="inside"
             isCentered
@@ -40,36 +75,70 @@ export default function ModalUser({
             <ModalContent>
                 <ModalHeader>
                     <Flex justifyContent="center">
-                        New Order
+                        {selectedData ? 'Edit User' : 'New User'}
                     </Flex>
                 </ModalHeader>
-                <ModalCloseButton />
+                <ModalCloseButton onClick={onClose} />
                 <ModalBody>
-                    <FormControl id="email" mb={4}>
-                        <FormLabel>Name</FormLabel>
-                        <Input type="text" />
-                    </FormControl>
-                    <FormControl id="email" mb={4}>
-                        <FormLabel>Email address</FormLabel>
-                        <Input type="text" />
-                    </FormControl>
-                    <HStack alignItems="center" justifyContent="space-between">
-                        <FormControl maxW="100px">
-                        <FormLabel>Role</FormLabel>
-                        <Select placeholder='Select option'>
-                            <option value='option1'>Admin</option>
-                            <option value='option2'>User</option>
-                        </Select>
+                    <Box as={'form'} onSubmit={handleSubmit(async (payload) => {
+                        const res = await onSubmit(payload)
+                        if (res?.data) {
+                            onClose()
+                        }
+                    })} method="POST">
+                        <FormControl id="email" mb={4} isInvalid={errors?.name?.message ? true : false}>
+                            <FormLabel>Name</FormLabel>
+                            <Input type="text" {...register('name')} />
+                            <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
                         </FormControl>
-                        <HStack>
-                        <Button colorScheme="red" mt={8}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme="green" mt={8}>
-                            Confirm
-                        </Button>
+                        <FormControl id="email" mb={4} isInvalid={errors?.email?.message ? true : false}>
+                            <FormLabel>Email address</FormLabel>
+                            <Input type="text" {...register('email')} />
+                            <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+                        </FormControl>
+                        {
+                            !selectedData && (
+                                <>
+                                    <FormControl id="email" mb={4} isInvalid={errors?.password?.message ? true : false}>
+                                        <FormLabel>Password</FormLabel>
+                                        <Input type="password" {...register('password', { required: selectedData ? false : true })} />
+                                        <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
+                                    </FormControl>
+                                    <FormControl id="password_confirmation" mb={4} isInvalid={errors?.password_confirmation?.message ? true : false}>
+                                        <FormLabel>Password Confirmation</FormLabel>
+                                        <Input type="password" {...register('password_confirmation', { required: selectedData ? false : true })} />
+                                        <FormErrorMessage>{errors.password_confirmation && errors.password_confirmation.message}</FormErrorMessage>
+                                    </FormControl>
+                                </>
+                            )
+                        }
+                        <HStack alignItems="center" justifyContent="space-between">
+                            <FormControl maxW="200px" isInvalid={errors?.role?.message ? true : false}>
+                                <FormLabel>Role</FormLabel>
+                                <Select
+                                    options={roleOptions}
+                                    menuPosition={'fixed'}
+                                    {...register('role')}
+                                    onChange={(val) => setValue('role', val?.value)}
+                                    value={roleOptions?.find((el) => el?.value === watch('role'))}
+                                />
+                                <FormErrorMessage>{errors.role && errors.role.message}</FormErrorMessage>
+                            </FormControl>
+                            <HStack>
+                                <Button colorScheme="red" mt={8} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" colorScheme="green" mt={8} isDisabled={isLoadingForm}>
+                                    {
+                                        isLoadingForm ?
+                                            <Spinner size="xs" />
+                                            :
+                                            'Confirm'
+                                    }
+                                </Button>
+                            </HStack>
                         </HStack>
-                    </HStack>
+                    </Box>
                 </ModalBody>
             </ModalContent>
         </Modal>

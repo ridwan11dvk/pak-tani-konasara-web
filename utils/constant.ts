@@ -15,6 +15,23 @@ export const ORDER_DETAIL_KEY = "order-detail-key";
 export const CALL_HISTORY_KEY = "call-history-key";
 export const AUDIO_KEY = "audio-key";
 
+//color
+export const SuccessColor = "#00aa13";
+export const PrimaryColor = "#1065c0";
+export const WarningColor = "#F06400";
+export const PinkColor = "#DF1995";
+export const DangerColor = "#EE2737";
+export const InfoColor = "#00AED6";
+export const PurpleColor = "#93328E";
+
+export const SuccessColorTransparent = 'rgba(0, 170, 19, 0.7)';
+export const PrimaryColorTransparent = 'rgba(16, 101, 192, 0.7)';
+export const WarningColorTransparent = 'rgba(240, 100, 0, 0.7)';
+export const PinkColorTransparent = 'rgba(223, 25, 149, 0.7)';
+export const DangerColorTransparent = 'rgba(238, 39, 55, 0.7)';
+export const InfoColorTransparent = 'rgba(0, 174, 214, 0.7)';
+export const PurpleColorTransparent = 'rgba(147, 50, 142, 0.7)';
+
 
 
 

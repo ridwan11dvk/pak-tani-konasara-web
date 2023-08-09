@@ -81,12 +81,12 @@ const DashboardPage = (): JSX.Element => {
   return (
     <>
       <Head>
-        <title>User Page</title>
+        <title>Dashboard - Pak Tani Konasara</title>
       </Head>
       <Layout>
         <Box p={"50px"}>
-          <VStack gap={8} alignItems="start" minW="full">
-            {/* If you add the size prop to `InputGroup`, it'll pass it to all its children. */}
+          <Text>Dashboard petani</Text>
+          {/* <VStack gap={8} alignItems="start" minW="full">
             <InputGroup size='md' >
               <Input value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder='Search User' backgroundColor="white"
@@ -136,10 +136,10 @@ const DashboardPage = (): JSX.Element => {
               queryParams={params}
               totalPages={totalPages}
             />
-          </VStack>
+          </VStack> */}
 
         </Box>
-        <ModalUser
+        {/* <ModalUser
           onSubmit={onSubmit}
           userForm={userForm}
           isOpen={isOpen}
@@ -157,7 +157,7 @@ const DashboardPage = (): JSX.Element => {
           isOpen={isOpenDelete}
           onClose={onCloseDelete}
           selectedData={selectedData}
-        />
+        /> */}
       </Layout>
     </>
   );

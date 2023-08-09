@@ -32,8 +32,8 @@ type LoginMutationResponse = {
 };
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required(),
+  email: yup.string().email('Format email salah').required('Email harus diisi'),
+  password: yup.string().required('Password harus diisi'),
 });
 
 export const useLogin = () => {

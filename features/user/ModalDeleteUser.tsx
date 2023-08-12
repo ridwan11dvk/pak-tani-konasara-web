@@ -13,6 +13,7 @@ import {
     Spinner,
     Text,
     VStack,
+    useMediaQuery,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 
@@ -34,7 +35,7 @@ export default function ModalDeleteUser({
     isSuccessDelete,
     selectedData
 }: ModalInterface) {
-
+    const [isMobile] = useMediaQuery('(max-width: 768px)')
     useEffect(() => {
         if (isSuccessDelete) {
             onClose()
@@ -48,7 +49,7 @@ export default function ModalDeleteUser({
             onClose={() => {
                 !isLoadingDelete && onClose()
             }}
-            size="xl"
+            size={isMobile ? 'sm' :"xl"}
             scrollBehavior="inside"
             isCentered
         >
@@ -62,18 +63,18 @@ export default function ModalDeleteUser({
                 <ModalCloseButton onClick={onClose}/>
                 <ModalBody>
                     <VStack justifyContent="center">
-                        <Text fontSize="2xl" fontWeight={"600"}>Are you sure to delete</Text>
+                        <Text fontSize="2xl" fontWeight={"600"}>Apakah anda yakin ingin menghapus ?</Text>
                         <Text fontSize="2xl" fontWeight={"600"}>{selectedData?.name}</Text>
                         <HStack gap={10}>
                             <Button colorScheme="red" mt={8} onClick={onClose}>
-                                Cancel
+                                Batal
                             </Button>
                             <Button type="button" onClick={() => selectedData?._id && onDelete(selectedData?._id)} colorScheme="green" mt={8} isDisabled={isLoadingDelete}>
                                 {
                                     isLoadingDelete ?
                                         <Spinner size="xs" />
                                         :
-                                        'Confirm'
+                                        'Ya'
                                 }
                             </Button>
                         </HStack>

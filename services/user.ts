@@ -28,6 +28,11 @@ export const postUserService = async (payload: AddUserType) => {
     return res.data
 }
 
+export const postAccessLoginService = async (payload: any) => {    
+    const res = await apiCall.post(`${AUTH_API.REGISTER}/verification`, payload)
+    return res.data
+}
+
 export const patchUserService = async (payload: AddUserType, id: string) => {
     const res = await apiCall.patch(`${AUTH_API.USERS}/${id}`, payload)
     return res.data

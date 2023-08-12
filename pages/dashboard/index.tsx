@@ -1,164 +1,213 @@
-import Layout from '@/components/Layout';
-import ModalUser from '@/features/user/ModalUser';
-import { useUserHook } from '@/hooks/useUserHook.tsx';
+
 import {
-  Box, Button, FormControl, Icon, Input, InputGroup, InputRightAddon, Text, VStack,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  HStack,
+  Box, Button, Icon, Input, InputGroup, InputRightElement, Text, VStack,
   useDisclosure,
-  FormLabel,
+  Divider,
+  SimpleGrid,
+  GridItem,
+  useMediaQuery,
 } from '@chakra-ui/react';
-import Table from "@/components/Table";
-import { BsPencil, BsTrash3, BsEyeFill, BsSearch } from 'react-icons/bs'
-import { UserDataInterface } from '@/hooks/useLogin';
-import ModalDeleteUser from '@/features/user/ModalDeleteUser';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDebounce } from 'use-debounce';
+import { DangerColorTransparent, InfoColorTransparent, PrimaryColorTransparent, PurpleColorTransparent, SuccessColor, SuccessColorTransparent, WarningColorTransparent } from '@/utils/constant';
+import useUserStore from '@/stores/useUser';
+import { FaCloudSunRain, FaUserCircle } from 'react-icons/fa';
+import Image from 'next/image';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { useRouter } from 'next/router';
+import { BsSearch } from 'react-icons/bs';
 
 const DashboardPage = (): JSX.Element => {
 
-  const {
-    dataUsers,
-    columnsUsers,
-    setParams,
-    totalPages,
-    params,
-    isLoadingUsers,
-    userForm,
-    onSubmit,
-    mutationPost,
-    selectedData,
-    handleSelectedData,
-    isLoadingForm,
-    isSuccessForm,
-    onDeleteUser,
-    isLoadingDelete,
-    isSuccessDelete
-  } = useUserHook()
-  const { isOpen, onClose, onOpen } = useDisclosure()
-  const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
+  
+  const { replace, push } = useRouter()
+  
+  const { userData, removeUserState } = useUserStore()
+  const logout = () => {
+    removeUserState()
+    replace('/')
+  }
+  const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   const [search, setSearch] = useState('')
   const [value] = useDebounce(search, 800)
 
-  useEffect(() => {
-    setParams({ ...params, search: value })
-  }, [value])
-
-  
 
 
-  const renderAction = (data: UserDataInterface) => {
-    return (
-      <HStack gap={4} >
-        <Button onClick={() => {
-          onOpen()
-          userForm.setValue('name', data.name)
-          userForm.setValue('email', data.email)
-          userForm.setValue('role', data.role)
-          handleSelectedData(data)
-        }}>
-          <Icon as={BsPencil} />
-        </Button>
-        <Button onClick={() => {
-          handleSelectedData(data)
-          onOpenDelete()
-        }}>
-          <Icon as={BsTrash3} />
-        </Button>
-      </HStack>
-    )
-  }
+
+  // const renderAction = (data: UserDataInterface) => {
+  //   return (
+  //     <HStack gap={4} >
+  //       <Button onClick={() => {
+  //         onOpen()
+  //         userForm.setValue('name', data.name)
+  //         userForm.setValue('email', data.email)
+  //         userForm.setValue('role', data.role)
+  //         handleSelectedData(data)
+  //       }}>
+  //         <Icon as={BsPencil} />
+  //       </Button>
+  //       <Button onClick={() => {
+  //         handleSelectedData(data)
+  //         onOpenDelete()
+  //       }}>
+  //         <Icon as={BsTrash3} />
+  //       </Button>
+  //     </HStack>
+  //   )
+  // }
 
   return (
     <>
       <Head>
         <title>Dashboard - Pak Tani Konasara</title>
       </Head>
-      <Layout>
-        <Box p={"50px"}>
-          <Text>Dashboard petani</Text>
-          {/* <VStack gap={8} alignItems="start" minW="full">
-            <InputGroup size='md' >
-              <Input value={search} onChange={(e) => setSearch(e.target.value)}
-                placeholder='Search User' backgroundColor="white"
-              />
-              <InputRightAddon backgroundColor="white">
-                <Icon as={BsSearch} />
-              </InputRightAddon>
-            </InputGroup>
-            <HStack gap={4}>
-              <FormControl mb={4}>
-                <FormLabel>Start Date</FormLabel>
-                <Input
+      {/* <Layout> */}
+      <Box display={"flex"} justifyContent="center" h="100vh" py='2%' backgroundColor={"white"}>
+        <Box w='100%' maxW="768px" p={isMobile ? 4 : 0} display={"flex"} flexDir="column" gap={4} backgroundColor={"white"}>
+          <Box display={'flex'} alignItems={'center'} gap={4}>
+            <Icon as={FaUserCircle} boxSize={6} />
+            <Text as="u" fontWeight="bold" >Hai, {userData?.name || ''}</Text>
 
-                  value={params.startDate}
-                  onChange={(e) => setParams({ ...params, startDate: e.target.value })}
-                  bgColor="white"
-                  placeholder="Select Date"
-                  type="date"
-                />
-              </FormControl>
-              <FormControl mb={4}>
-                <FormLabel>End Date</FormLabel>
-                <Input
-                  value={params.endDate}
-                  onChange={(e) => setParams({ ...params, endDate: e.target.value })}
-                  bgColor="white"
-                  placeholder="Select Date"
-                  type="date"
-                />
-              </FormControl>
-            </HStack>
+          </Box>
 
-            <Button colorScheme='green' onClick={() => {
-              onOpen()
-              userForm.reset()
-            }}>
-              New User
-            </Button>
-            <Table
-              columns={columnsUsers}
-              isLoading={isLoadingUsers}
-              data={dataUsers || []}
-              actionButton={true}
-              actionMenu={renderAction}
-              isSorting={true}
-              setQueryParams={setParams}
-              queryParams={params}
-              totalPages={totalPages}
+          <Box p={4} w='100%' bgGradient={`linear(to-r, #a7f3d0 ,${SuccessColor})`} borderRadius="md" display={'flex'} flexDir={'row'}>
+            <Box display={"flex"} flexDir={"column"} w='100%' gap={2}>
+              <Text fontWeight="bold" fontSize={"lg"}>Pak Tani Konasara</Text>
+              <Text>Program Pengembangan Kebun Pekarangan (PPKP)</Text>
+              <Divider borderColor={"black"} />
+              <Box display={"flex"} gap={2} alignItems={"center"}>
+                <Icon as={HiOutlineLocationMarker} />
+                <Text>Kabupaten Konawe Utara</Text>
+              </Box>
+              <Box display={"flex"} flexDir={"column"} w='60%' gap={2} >
+                <Box display={"flex"} justifyContent={"space-between"}>
+                  <Icon as={FaCloudSunRain} boxSize={6} />
+                  <Text fontWeight={"bold"} fontSize={"lg"}>28&#176;C</Text>
+                </Box>
+                <Text>Hujan Panas</Text>
+                <Box gap={4} display={"flex"} flexDir={isMobile ? "column" : 'row'}>
+                <Box>
+                  <Text fontWeight={"bold"}>76%</Text>
+                  <Text>Kelembaban</Text>
+
+                </Box>
+                <Box>
+                  <Text fontWeight={"bold"}>1014 hPa</Text>
+                  <Text>Tekanan Udara</Text>
+
+                </Box>
+                </Box>
+                
+              </Box>
+            </Box>
+            <Box display={"flex"} flexDir={"column"} justifyContent={"center"} w='80%' alignItems={"center"}>
+              <Box p={4} backgroundColor="white" borderRadius="xl" display={'flex'} flexDir={"column"} justifyContent={"center"} gap={4}>
+                <Image src={'/pak-tani.png'} height={100} width={100} alt='' />
+                <Button onClick={logout} colorScheme='red' height="30px">Logout</Button>
+              </Box>
+
+            </Box>
+          </Box>
+          <InputGroup size='md' >
+            <Input value={search} onChange={(e) => setSearch(e.target.value)}
+              placeholder='Pencarian' backgroundColor="white"
             />
-          </VStack> */}
-
+            <InputRightElement >
+              <Icon as={BsSearch} />
+            </InputRightElement>
+          </InputGroup>
+          <Box p={2}>
+            <SimpleGrid columns={4} gap={4}>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} borderRadius={"full"} >
+                  <Box onClick={() => push('/dashboard/user')} boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={DangerColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/boy.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Pengguna</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={SuccessColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/infotani.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Kotak Bibit</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={PrimaryColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/permintaan_bibit.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Permintaan Bibit</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={WarningColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/statistics.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Monitoring</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={SuccessColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/growing-plant.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Tes Tanah</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={InfoColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/penyiraman.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Penyiraman Cerdas</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={PurpleColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/nitrogenicon.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Tes Kadar Nitrogen</Text>
+                </Box>
+              </GridItem>
+              <GridItem>
+                <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={DangerColorTransparent} borderRadius="full" p={4}>
+                    <Image src={'/icon/caterpillar.png'} height={30} width={30} alt='' />
+                  </Box>
+                  <Text textAlign={"center"} fontSize={14} pt={2}>Pendeteksi Hama</Text>
+                </Box>
+              </GridItem>
+            </SimpleGrid>
+          </Box>
+          <Box p={4} display={"flex"} justifyContent="space-between" gap={2}>
+            <Box onClick={() => push('/dashboard/manage-land')} display={"flex"} gap={2} flexDir={"column"} justifyContent="center" alignItems={"center"} cursor={"pointer"}>
+              <Box p={2} boxShadow={"base"} borderRadius="lg">
+                <Image src={'/icon/land.png'} height={100} width={100} alt='' />
+              </Box>
+              <Text>Kelola Lahan</Text>
+            </Box>
+            <Box display={"flex"} gap={2} flexDir={"column"} justifyContent="center" alignItems={"center"} cursor={"pointer"}>
+              <Box p={2} boxShadow={"base"} borderRadius="lg">
+                <Image src={'/icon/fotopetani.png'} height={100} width={100} alt='' />
+              </Box>
+              <Text>Uji Kualitas</Text>
+            </Box>
+            <Box display={"flex"} gap={2} flexDir={"column"} justifyContent="center" alignItems={"center"} cursor={"pointer"}>
+              <Box p={2} boxShadow={"base"} borderRadius="lg">
+                <Image src={'/icon/toko_tani.png'} height={100} width={100} alt='' />
+              </Box>
+              <Text>Produk</Text>
+            </Box>
+          </Box>
         </Box>
-        {/* <ModalUser
-          onSubmit={onSubmit}
-          userForm={userForm}
-          isOpen={isOpen}
-          handleSelectedData={handleSelectedData}
-          onClose={onClose}
-          mutationPost={mutationPost}
-          isLoadingForm={isLoadingForm}
-          isSuccessForm={isSuccessForm}
-          selectedData={selectedData}
-        />
-        <ModalDeleteUser
-          onDelete={onDeleteUser}
-          isLoadingDelete={isLoadingDelete}
-          isSuccessDelete={isSuccessDelete}
-          isOpen={isOpenDelete}
-          onClose={onCloseDelete}
-          selectedData={selectedData}
-        /> */}
-      </Layout>
+      </Box>
     </>
   );
 };

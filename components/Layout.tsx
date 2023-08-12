@@ -1,7 +1,8 @@
 import useUserStore from '@/stores/useUser';
 import { SuccessColor } from '@/utils/constant';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { Box, Button, Flex, HStack, Icon, Text, Menu, MenuButton, MenuList, MenuItem, IconButton } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon, Text, Menu, MenuButton, MenuList, MenuItem, IconButton, useMediaQuery } from '@chakra-ui/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { CiLogout, CiUser, CiLock } from 'react-icons/ci'
@@ -9,6 +10,7 @@ import { FaLock, FaUser } from 'react-icons/fa'
 
 interface LayoutProps {
   children: React.ReactNode;
+  menuName?: string
 }
 
 const menus: any[] = [
@@ -19,9 +21,10 @@ const menus: any[] = [
   { name: 'Notification', path: '/dashboard/notification', type: 'notification' },
 ]
 
-const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
+const Layout: React.FC<LayoutProps> = ({ children,  menuName="Pak Tani Konasara"}): JSX.Element => {
   const { asPath, replace, basePath } = useRouter()
   const { removeUserState } = useUserStore()
+  const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   const logout = () => {
     removeUserState()
@@ -29,13 +32,16 @@ const Layout: React.FC<LayoutProps> = ({ children }): JSX.Element => {
   }
 
   return (
-    <Box display="flex" minHeight="100vh">
-      <Box flex="4" bg="gray.100">
+    <Box minHeight="100vh" maxW={isMobile ? '768px' : 'auto'} minW={'full'}>
+      <Box bg="gray.100">
         {/* Header */}
         <Box p={4} minW="full" bgColor={SuccessColor} sx={{ color: 'white' }}>
           <Flex justifyContent="space-between" alignItems="center">
             <HStack gap={4}>
-              <Text as={Link} href={"/dashboard"} mr={4} fontSize="xl" fontWeight="bold">Pak Tani Konasara</Text>
+              <Link href={"/dashboard"}>
+                <Image alt='' src={"/pak-tani.png"} width={50} height={50}/>
+              </Link>
+              <Text mr={4} fontSize="xl" fontWeight="bold">{menuName}</Text>
               {/* {menus.map((menu, index) => {
                 return <Text
                   as={Link}

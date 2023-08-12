@@ -198,7 +198,7 @@ function TableContainer<DataType extends object>({
             tableColumns.push({
                 id: "_action",
                 accessorKey: "_action" as keyof DataType,
-                header: "Action",
+                header: "Aksi",
                 cell: ({ row }) => {
                     return actionMenu?.(row?.original);
                 }

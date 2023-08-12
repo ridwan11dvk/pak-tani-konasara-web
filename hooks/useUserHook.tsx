@@ -3,6 +3,7 @@ import {
   deleteUserService,
   detailUserService,
   patchUserService,
+  postAccessLoginService,
   postUserService,
   userService,
   userServiceByUserId,
@@ -41,9 +42,12 @@ export const columnsUsers: any[] = [
     label: "Role",
   },
   {
-    key: "cell",
-    label: "Order",
-    cell: (row: any) => CustomCell(row?.original),
+    key: "status",
+    label: "Status",
+  },
+  {
+    key: "createdAt",
+    label: "Tanggal di buat",
   }
 ];
 
@@ -69,13 +73,14 @@ export const useUserHook = () => {
     search: "",
     startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
     endDate: "",
+    status: "",
+    sort: ''
   });
 
   const { userData } = useUserStore();
   const { successToast, errorToast } = useHandlingHttpToast();
   const queryClient = useQueryClient();
   const { data: dataUsers, isLoading, refetch } = useFetchUsers(params);
-  const { data: dataUsersById, isLoading: isLoadingById, refetch: refetchUserById } = useFetchUserByUserId(userData?._id, params);
   const mutationPost = usePostUser();
   const mutationPatch = usePatchUser();
   const mutationDelete = useDeleteUser();
@@ -91,11 +96,11 @@ export const useUserHook = () => {
       params.page || 
       params.search ||
       params.startDate ||
-      params.endDate
+      params.endDate ||
+      params.status ||
+      params.sort
       // params
     ) {
-      console.log('call me')
-      refetchUserById()
       refetch()
     }
   }, [
@@ -104,7 +109,9 @@ export const useUserHook = () => {
     params.limit, 
     params.search,
     params.startDate,
-    params.endDate
+    params.endDate,
+    params.status, 
+    params.sort
   ]);
 
   const handleSelectedData = (data?: UserDataInterface) => {
@@ -140,7 +147,6 @@ export const useUserHook = () => {
       successToast(response?.message);
       handleSelectedData()
       queryClient.invalidateQueries([USERS_KEY]);
-      refetchUserById()
       userForm.reset();
       return response || null;
       // Additional logic for handling the response
@@ -158,7 +164,7 @@ export const useUserHook = () => {
 
       successToast(response?.message);
       handleSelectedData()
-      refetch();
+      await refetch();
       return response || null;
       // Additional logic for handling the response
     } catch (error: any) {
@@ -171,9 +177,9 @@ export const useUserHook = () => {
 
 
   return {
-    totalData: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.total : dataUsers?.total,
-    totalPages: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.totalPages : dataUsers?.totalPages,
-    dataUsers: userData?.role !== ROLE_STATUS.super_admin.value ? dataUsersById?.data?.map((item) => ({ ...item, cell: CustomCell })) : dataUsers?.data?.map((item) => ({ ...item, cell: CustomCell })) || [],
+    totalData: dataUsers?.total,
+    totalPages: dataUsers?.totalPages,
+    dataUsers: dataUsers?.data?.map((item) => ({ ...item, status: item?.status === 'approved' ? 'Disetujui' : item?.status === 'rejected' ? 'Ditolak' : "Menunggu Konfirmasi" , cell: CustomCell, createdAt: moment(item?.createdAt || '').format('YYYY-MM-DD') })) ,
     isLoadingUsers: isLoading,
     isLoadingForm: mutationPatch.isLoading || mutationPost.isLoading,
     isSuccessForm: mutationPatch.isSuccess || mutationPatch.isSuccess,
@@ -188,6 +194,7 @@ export const useUserHook = () => {
     onDeleteUser,
     isLoadingDelete: mutationDelete.isLoading,
     isSuccessDelete: mutationDelete.isSuccess,
+    refetch
   };
 };
 
@@ -234,5 +241,11 @@ export const usePatchUser = () => {
 export const useDeleteUser = () => {
   return useMutation<PostUserApiResponse, AxiosError, string>(
     (id: string) => deleteUserService(id)
+  );
+};
+
+export const useAccessLoginUser = () => {
+  return useMutation<PostUserApiResponse, AxiosError, any>(
+    (payload) => postAccessLoginService(payload)
   );
 };

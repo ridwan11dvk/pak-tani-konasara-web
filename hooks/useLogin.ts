@@ -18,6 +18,7 @@ export interface UserDataInterface {
   email: string;
   name: string;
   role: string;
+  status?: string;
   updatedAt?: string;
   _id?: string;
   id_user_creator?: string;

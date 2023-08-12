@@ -1,22 +1,13 @@
-type OptionType = { [x: string]: any }
-type OptionsType = Array<OptionType>
+type OptionType = { [x: string]: any };
+type OptionsType = Array<OptionType>;
 
 export const roleOptions: OptionsType = [
-    // {
-    //     label: 'Super Admin',
-    //     value: 'superadmin'
-    // },
-    {
-        label: 'Admin',
-        value: 'admin'
-    },
-    
-    {
-        label: 'User',
-        value: 'user'
-    },
-    {
-        label: 'Caller',
-        value: 'caller'
-    }
-]
+  { label: "Admin Gudang", value: "Admin Gudang" },
+  { label: "Petani", value: "Petani" },
+  { label: "Pembeli", value: "Pembeli" },
+];
+
+export const statusOptions: OptionsType = [
+  { label: "Non-Aktif", value: "Non-Aktif" },
+  { label: "Aktif", value: "Aktif" },
+];

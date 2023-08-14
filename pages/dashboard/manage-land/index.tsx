@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { useLand } from '@/hooks/useLand';
 import ModalLand from '@/features/land/ModalLand';
+import ModalDeleteLand from '@/features/land/ModalDeleteLand';
 
 
 const ManageLandPage = (): JSX.Element => {
@@ -34,7 +35,7 @@ const ManageLandPage = (): JSX.Element => {
     handleSelectedData,
     isLoadingForm,
     isSuccessForm,
-    onDeleteUser,
+    onDelete,
     isLoadingDelete,
     isSuccessDelete,
     refetch
@@ -176,14 +177,14 @@ const ManageLandPage = (): JSX.Element => {
             selectedData={selectedData}
             refetch={refetch}
           />
-          {/*<ModalDeleteUser
-            onDelete={onDeleteUser}
+          <ModalDeleteLand
+            onDelete={onDelete}
             isLoadingDelete={isLoadingDelete}
             isSuccessDelete={isSuccessDelete}
             isOpen={isOpenDelete}
             onClose={onCloseDelete}
             selectedData={selectedData}
-          /> */}
+          />
         </Box>
       </Layout>
     </>

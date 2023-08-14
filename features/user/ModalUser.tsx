@@ -202,7 +202,7 @@ export default function ModalUser({
                                         mutationPostAccessLogin.isLoading || isLoadingForm ?
                                             <Spinner size="xs" />
                                             :
-                                            'Ubah'
+                                            selectedData ? 'Ubah' : 'Tambah Data'
                                     }
                                 </Button>
                                 {/* </GridItem> */}

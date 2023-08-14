@@ -7,16 +7,10 @@ export const getLandService = async (payload: any) => {
     return res.data
 }
 
-// export const userServiceByUserId = async (id: any, payload: any, ) => {
-//     const res = await apiCall.get(`${AUTH_API.USERS}/list/${id}?${serialize(payload)}`)
-//     return res.data
-// }
-
-// export const detailUserService = async (id: any) => {
-//     const res = await apiCall.get(`${AUTH_API.USERS}/${id}`)
-//     return res.data
-// }
-
+export const getLandByAuthorIdService = async (payload: any, authorId: any) => {
+    const res = await apiCall.get(`${AUTH_API.MANAGE_LAND}/${authorId}?${serialize(payload)}`)
+    return res.data
+}
 
 export const postLandService = async (payload: any) => {    
     const res = await apiCall.post(`${AUTH_API.MANAGE_LAND}`, payload)
@@ -24,14 +18,9 @@ export const postLandService = async (payload: any) => {
 }
 
 export const putLandService = async (payload: any, id: string) => {
-    const res = await apiCall.patch(`${AUTH_API.MANAGE_LAND}/${id}`, payload)
+    const res = await apiCall.put(`${AUTH_API.MANAGE_LAND}/${id}`, payload)
     return res.data
 }
-
-// export const patchUpdatePassword = async (id: string , payload: any) => {
-//     const res = await apiCall.patch(`${AUTH_API.MANAGE_LAND}/update-password/${id}`, payload)
-//     return res.data
-// }
 
 export const deleteLandService = async (id: string) => {
     const res = await apiCall.delete(`${AUTH_API.MANAGE_LAND}/${id}`)

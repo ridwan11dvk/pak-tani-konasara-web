@@ -18,6 +18,10 @@ export const AUDIO_KEY = "audio-key";
 export const LAND_KEY = 'land-key'
 export const LAND_BY_AUTHOR_ID = 'land-by-author-id-key'
 
+//seed
+
+export const LIST_SEED = 'list-seed'
+
 //color
 export const SuccessColor = "#00aa13";
 export const PrimaryColor = "#1065c0";

@@ -20,5 +20,7 @@ export const AUTH_API = {
   CALL_LIST: `${BASE_API_URL}/call-list`,
   NOTIFICATION: `${BASE_API_URL}/notification`,
   PROFILE: `${BASE_API_URL}/profile`,
-  MANAGE_LAND: `${BASE_API_URL}/lahan`
+  MANAGE_LAND: `${BASE_API_URL}/lahan`,
+  SEED: `${BASE_API_URL}/bibit`,
+  REQUEST_SEED: `${BASE_API_URL}/permintaanBibit`,
 }

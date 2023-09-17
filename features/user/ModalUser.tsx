@@ -69,10 +69,12 @@ export default function ModalUser({
     }, [isSuccessForm])
 
     const handleAccessLogin = async (data: any) => {
+        console.log('data', data)
+
         try {
             const cpPayload: any = {
                 id_user: data?._id,
-                status: data?.status === 'rejected' || data?.status === 'request' ? 'approved' : 'rejected'
+                status: (data?.status === 'rejected' || data?.status === 'request' || data?.status === 'Ditolak') ? 'approved' : 'rejected'
             };
             // Make the HTTP request to the backend server
             let response = null;

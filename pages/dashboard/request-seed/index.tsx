@@ -22,9 +22,13 @@ import ModalLand from '@/features/land/ModalLand';
 import ModalDeleteLand from '@/features/land/ModalDeleteLand';
 import { useRequestSeed } from '@/hooks/useRequestSeed';
 import RequestSeedModal from '@/features/seed/RequestSeedModal';
+import ProceessedSeedModal from '@/features/seed/ProcessedSeedModal';
+import { useRouter } from 'next/router';
+import ApprovedRequestModal from '@/features/seed/ApprovedRequestModal';
 
 
 const RequestSeed = (): JSX.Element => {
+    const { query } = useRouter()
     const {
         dataSeeds,
         columnsLand,
@@ -48,6 +52,8 @@ const RequestSeed = (): JSX.Element => {
 
     const { isOpen, onClose, onOpen } = useDisclosure()
     const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpen: onOpenDelete } = useDisclosure()
+    const { isOpen: isOpenProcessed, onClose: onCloseProcessed, onOpen: onOpenProcessed } = useDisclosure()
+    const { isOpen: isOpenApproved, onClose: onCloseApproved, onOpen: onOpenApproved } = useDisclosure()
     const [isMobile] = useMediaQuery('(max-width: 768px)')
     const [search, setSearch] = useState('')
     const [value] = useDebounce(search, 800)
@@ -137,13 +143,13 @@ const RequestSeed = (): JSX.Element => {
                             {/* <Text pb={2}>Filter berdasarkan</Text> */}
                             <SimpleGrid columns={isMobile ? 2 : 5} gap={4}>
                                 <Button colorScheme='blue' gap={2} onClick={() => {
-                                    setParams({ ...params, status: 'Aktif' })
+                                    onOpenProcessed()
                                 }}>
                                     <Icon as={IoLeafOutline} />
                                     Diproses
                                 </Button>
                                 <Button colorScheme='green' gap={2} onClick={() => {
-                                    setParams({ ...params, status: 'Aktif' })
+                                    onOpenApproved()
                                 }}>
                                     <Icon as={BsCheck2Circle} />
                                     Diterima
@@ -183,6 +189,15 @@ const RequestSeed = (): JSX.Element => {
                         isOpen={isOpenDelete}
                         onClose={onCloseDelete}
                         selectedData={selectedData}
+                    />
+                    <ProceessedSeedModal
+                        isOpen={isOpenProcessed}
+                        onClose={onCloseProcessed}
+                        authorId={query?.authorId as string || ''}
+                    />
+                    <ApprovedRequestModal
+                        isOpen={isOpenApproved}
+                        onClose={onCloseApproved}
                     />
                 </Box>
             </Layout>

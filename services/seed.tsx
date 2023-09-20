@@ -12,3 +12,14 @@ export const postRequestSeed = async (payload: any) => {
     return res.data
 }
 
+export const getAllRequestSeedByAuthorId = async (id:any, payload: any) => {    
+
+    const res = await apiCall.get(`${AUTH_API.REQUEST_SEED}/${id}?${serialize(payload)}`)
+    return res.data
+}
+
+export const deleteRequestSeed = async (id: any) => {    
+    const res = await apiCall.delete(`${AUTH_API.REQUEST_SEED}/${id}`)
+    return res.data
+}
+

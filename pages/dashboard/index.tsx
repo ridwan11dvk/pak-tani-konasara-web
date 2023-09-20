@@ -339,7 +339,7 @@ const DashboardPage = (): JSX.Element => {
                   </Box>
                 </GridItem>
                 <GridItem>
-                  <Box display={"flex"} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
+                  <Box display={"flex"} onClick={() => push(`/dashboard/request-seed?authorId=${userData?._id}`)} justifyContent={"center"} flexDir={"column"} alignItems={"center"} >
                     <Box boxShadow="base" style={{ cursor: 'pointer' }} backgroundColor={InfoColorTransparent} borderRadius="full" p={4}>
                       <Image src={'/icon/permintaan_bibit.png'} height={30} width={30} alt='' />
                     </Box>

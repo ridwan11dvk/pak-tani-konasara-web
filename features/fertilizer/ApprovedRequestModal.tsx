@@ -43,8 +43,9 @@ import { UseMutationResult, useQueryClient } from "react-query";
 import Select from "react-select";
 import { setTokenSourceMapRange } from "typescript";
 import { useDebounce } from "use-debounce";
-import CancelRequestSeedModall from "./CancelRequestSeedModal";
-import { LIST_REQUEST_SEED_BY_AUTHOR_ID } from "@/utils/constant";
+import CancelRequestSeedModall from "./CancelRequestFertilizerModal";
+import { LIST_REQUEST_FERTILIZER_BY_AUTHOR_ID } from "@/utils/constant";
+import { useDeleteRequestFertilizer, useFetchRequestFertilizerByIds } from "@/hooks/useRequestFertilizer";
 
 interface ModalInterface {
   isOpen: boolean;
@@ -52,7 +53,7 @@ interface ModalInterface {
   authorId?: string;
 }
 
-export default function ProceessedSeedModal({
+export default function ApprovedRequestModal({
   isOpen,
   onClose,
   authorId,
@@ -60,7 +61,7 @@ export default function ProceessedSeedModal({
   const columnSeed: any[] = [
     {
       key: "namaBarang",
-      label: "Nama Bibit",
+      label: "Nama Pupuk",
     },
     {
       key: "jumlah",
@@ -79,12 +80,13 @@ export default function ProceessedSeedModal({
   const [isMobile] = useMediaQuery("(max-width: 768px)");
   const [params, setParams] = useState({
     startDate: moment().subtract(7, "d").format("YYYY-MM-DD"),
+    status: "Diterima",
     endDate: "",
     search: "",
   });
 
   const { data, isError, isFetching, isLoading, refetch } =
-    useFetchRequestSeedByIds(authorId || "", params);
+    useFetchRequestFertilizerByIds(authorId || "", params);
   const {
     isOpen: isOpenCancel,
     onClose: onCloseCancel,
@@ -95,7 +97,7 @@ export default function ProceessedSeedModal({
   const [selectedData, setSelectedData] = useState<any>(null);
   const { successToast, errorToast } = useHandlingHttpToast();
   const queryClient = useQueryClient();
-  const mutationDelete = useDeleteRequestSeed();
+  const mutationDelete = useDeleteRequestFertilizer();
 
   useEffect(() => {
     setParams({ ...params, search: value });
@@ -133,7 +135,7 @@ export default function ProceessedSeedModal({
 
       successToast(response?.message);
       handleSelectedData();
-      queryClient.invalidateQueries([LIST_REQUEST_SEED_BY_AUTHOR_ID]);
+      queryClient.invalidateQueries([LIST_REQUEST_FERTILIZER_BY_AUTHOR_ID]);
       onCloseCancel();
       return response || null;
       // Additional logic for handling the response
@@ -181,7 +183,7 @@ export default function ProceessedSeedModal({
       <ModalOverlay />
       <ModalContent minW={isMobile ? "auto" : "800px"}>
         <ModalHeader>
-          <Flex justifyContent="center">Daftar Permintaan Bibit Di proses</Flex>
+          <Flex justifyContent="center">Daftar Permintaan Pupuk Di Terima</Flex>
         </ModalHeader>
         <ModalCloseButton onClick={onClose} />
         <ModalBody>
@@ -221,7 +223,7 @@ export default function ProceessedSeedModal({
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cari Request Bibit"
+                  placeholder="Cari Request Pupuk"
                   backgroundColor="white"
                 />
                 <InputRightElement>
@@ -237,8 +239,7 @@ export default function ProceessedSeedModal({
                   return { ...el, kategori: el?.barangDetail?.kategori || "-" };
                 }) || []
               }
-              actionButton={true}
-              actionMenu={renderAction}
+              // actionButton={true}
               isSorting={true}
               setQueryParams={setParams}
               queryParams={params}

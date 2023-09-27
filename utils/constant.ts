@@ -23,6 +23,11 @@ export const LAND_BY_AUTHOR_ID = 'land-by-author-id-key'
 export const LIST_SEED = 'list-seed'
 export const LIST_REQUEST_SEED_BY_AUTHOR_ID = 'list-request-seed-by-author-id-key'
 
+//fertilizer
+
+export const LIST_FERTILIZER = 'list-fertilizer'
+export const LIST_REQUEST_FERTILIZER_BY_AUTHOR_ID = 'list-request-fertilizer-by-author-id-key'
+
 //color
 export const SuccessColor = "#00aa13";
 export const PrimaryColor = "#1065c0";

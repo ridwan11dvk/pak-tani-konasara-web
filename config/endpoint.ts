@@ -23,4 +23,6 @@ export const AUTH_API = {
   MANAGE_LAND: `${BASE_API_URL}/lahan`,
   SEED: `${BASE_API_URL}/bibit`,
   REQUEST_SEED: `${BASE_API_URL}/permintaanBibit`,
+  FERTILIZER: `${BASE_API_URL}/pupuk`,
+  REQUEST_FERTILIZER: `${BASE_API_URL}/permintaanPupuk`,
 }

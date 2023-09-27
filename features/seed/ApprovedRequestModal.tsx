@@ -60,7 +60,7 @@ export default function ApprovedRequestModal({
   const columnSeed: any[] = [
     {
       key: "namaBarang",
-      label: "Nama Lahan",
+      label: "Nama Bibit",
     },
     {
       key: "jumlah",
